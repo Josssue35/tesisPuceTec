@@ -1,0 +1,144 @@
+/* src/styles.css */
+body {
+    background-color: black;
+    /* Fondo negro para toda la página */
+    margin: 0;
+    /* Eliminar margenes por defecto */
+    font-family: Arial, sans-serif;
+    /* Fuente para el texto */
+}
+
+.menu-container {
+    display: flex;
+    padding: 20px;
+    color: white;
+    /* Texto blanco */
+}
+
+.section-container {
+    display: flex;
+    flex-direction: column;
+    /* Mantener las secciones en columnas */
+    width: 70%;
+    /* Ancho para las secciones */
+    margin-right: 20px;
+    /* Espacio entre secciones y productos seleccionados */
+}
+
+.section-buttons {
+    display: flex;
+    /* Mantener botones uno al lado del otro */
+    justify-content: space-between;
+    /* Espacio entre los botones */
+    margin-bottom: 20px;
+    /* Espacio entre botones y categorías */
+}
+
+.section-buttons .product-btn {
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #FEAC00;
+    /* Color de fondo amarillo */
+    color: black;
+    /* Texto negro */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    flex: 1;
+    /* Hacer que los botones ocupen el mismo ancho */
+    margin: 0 10px;
+    /* Espacio horizontal entre botones */
+    transition: background-color 0.3s;
+}
+
+.section-buttons .product-btn:hover {
+    background-color: #FFC107;
+    /* Color al pasar el cursor */
+}
+
+.category-container {
+    display: flex;
+    /* Mantener categorías en fila */
+    margin-bottom: 20px;
+}
+
+.category {
+    margin-right: 20px;
+    /* Espacio entre categorías */
+    border: 1px solid #FEAC00;
+    /* Borde amarillo */
+    padding: 10px;
+    border-radius: 5px;
+    /* Bordes redondeados */
+    width: 100%;
+    /* Hacer que cada categoría ocupe el mismo ancho */
+}
+
+.product-list {
+    display: flex;
+    flex-direction: column;
+    /* Productos en filas */
+    flex-wrap: nowrap;
+    /* Sin salto de línea */
+}
+
+.product-button {
+    position: relative;
+    margin: 5px 0;
+    /* Espacio entre productos */
+}
+
+.product-btn {
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: #FEAC00;
+    /* Color de fondo amarillo */
+    color: black;
+    /* Texto negro */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    /* Botones ocupan todo el ancho */
+    transition: background-color 0.3s;
+}
+
+.product-btn:hover {
+    background-color: #FFC107;
+    /* Color al pasar el cursor */
+}
+
+.price-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: black;
+    /* Fondo negro para el tooltip */
+    color: #FEAC00;
+    /* Texto amarillo */
+    padding: 5px;
+    border-radius: 5px;
+    visibility: hidden;
+}
+
+.product-button:hover .price-tooltip {
+    visibility: visible;
+    /* Tooltip visible al pasar el cursor */
+}
+
+.selected-products-container {
+    width: 25%;
+    /* Ancho para la sección de productos seleccionados */
+    background-color: #333;
+    /* Fondo gris oscuro */
+    padding: 10px;
+    border-radius: 5px;
+    /* Bordes redondeados */
+}
+
+.selected-products-container h2 {
+    margin-bottom: 10px;
+    color: #FEAC00;
+    /* Título en color amarillo */
+}
