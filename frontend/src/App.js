@@ -25,7 +25,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1 style={tex}>Asadero</h1>
+      <h1>Asadero</h1>
       <ProductList products={products} />
     </div>
   );
