@@ -1,14 +1,17 @@
 import express from 'express';
-import pool from '../config/database.js'; // Asegúrate de que la ruta sea correcta
+import cors from 'cors';
+import productRoutes from './routes/producto.js'; // Ajusta la ruta según tu estructura de carpetas
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware para parsear JSON
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// Iniciar el servidor
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// Usar las rutas de productos
+app.use('/products', productRoutes);
 
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
