@@ -1,6 +1,7 @@
 // src/App.js
 import React from 'react';
 import ProductList from './ProductList';
+import './App.css';
 
 const App = () => {
   const products = [
