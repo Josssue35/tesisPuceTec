@@ -8,7 +8,7 @@ async function getAllProducts() {
     }
     catch (error) {
         console.error('Error al recuperar los productos:', error)
-        throw new Error('Error de base de datos durante la recuperación de usuarios')
+        throw new Error('Error de base de datos durante la recuperación de productos')
     }
 }
 
