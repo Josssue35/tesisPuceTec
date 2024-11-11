@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './styles.css'; // Asegúrate de tener una hoja de estilos moderna
+import '../styles/ProductList.css';
 
 const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove }) => {
     const [totalPrice, setTotalPrice] = useState(0);
