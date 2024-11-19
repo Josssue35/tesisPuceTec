@@ -1,33 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import '../styles/ProductList.css';
+import axios from 'axios'; // Asegúrate de tener axios instalado
+import '../styles/ProductList.css'; // Asegúrate de que la ruta sea correcta
 
-const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove }) => {
+const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearCart }) => {
     const [totalPrice, setTotalPrice] = useState(0);
 
     // Calcula el precio total
-    const calculateTotalPrice = () => {
+    useEffect(() => {
         const total = selectedProducts.reduce((sum, { product, quantity }) => {
-            return sum + (parseFloat(product.precio) * quantity); // Usamos parseFloat para asegurar que el precio sea un número
+            return sum + (parseFloat(product.precio) * quantity || 0);
         }, 0);
         setTotalPrice(total);
-    };
-
-    // Actualiza el total cada vez que cambia la lista de productos seleccionados
-    useEffect(() => {
-        calculateTotalPrice();
     }, [selectedProducts]);
 
     // Maneja el cambio de cantidad
     const handleQuantityChange = (id, newQuantity) => {
+        if (newQuantity < 0) return; // Evita cantidades negativas
         onUpdateQuantity(id, newQuantity);
-        calculateTotalPrice(); // Recalcula el precio total
     };
 
-    // Maneja la acción de aceptar la compra
-    const handleAcceptPurchase = () => {
-        alert(`Compra aceptada! Total: $${totalPrice.toFixed(2)}`);
-        // Puedes implementar aquí la lógica para finalizar la compra (enviar la orden, etc.)
+    const handleAcceptPurchase = async () => {
+        if (selectedProducts.length === 0) {
+            alert('No tienes productos seleccionados para comprar.');
+            return;
+        }
+    
+        try {
+            const pedidoData = selectedProducts.map(({ product, quantity }) => ({
+                productId: product.id,
+                quantity: quantity,
+                price: product.precio,
+            }));
+    
+            const response = await axios.post('/api/pedido', { productos: pedidoData });
+    
+            console.log('Pedido creado:', response.data);
+            alert(`Compra aceptada! Total: $${totalPrice.toFixed(2)}`);
+    
+            // Limpia el carrito después de una compra exitosa
+            if (typeof clearCart === 'function') {
+                clearCart();
+            } else {
+                console.warn('clearCart no está definida o no es una función.');
+            }
+        } catch (error) {
+            console.error('Error al realizar la compra:', error);
+            alert('Hubo un problema al procesar el pedido. Por favor, intenta de nuevo.');
+        }
     };
+    
 
     return (
         <div className="selected-products-container">
@@ -47,7 +68,7 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove }) => {
                                     type="number"
                                     value={quantity}
                                     min="0"
-                                    onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value) || 0)} // Asegura que sea un número válido
+                                    onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value) || 0)}
                                     className="quantity-input"
                                 />
                                 <button
