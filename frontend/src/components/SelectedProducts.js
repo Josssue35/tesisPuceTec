@@ -7,7 +7,7 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove }) => {
     // Calcula el precio total
     const calculateTotalPrice = () => {
         const total = selectedProducts.reduce((sum, { product, quantity }) => {
-            return sum + (parseFloat(product.precio) * quantity); // Usamos parseFloat para asegurar que el precio sea un número
+            return sum + parseFloat(product.precio) * quantity; // Usamos parseFloat para asegurar que el precio sea un número
         }, 0);
         setTotalPrice(total);
     };
@@ -18,9 +18,10 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove }) => {
     }, [selectedProducts]);
 
     // Maneja el cambio de cantidad
-    const handleQuantityChange = (id, newQuantity) => {
+    const handleQuantityChange = (id, change) => {
+        const product = selectedProducts.find((p) => p.product.id === id);
+        const newQuantity = Math.max(0, (product.quantity || 0) + change); // Asegura que la cantidad no sea negativa
         onUpdateQuantity(id, newQuantity);
-        calculateTotalPrice(); // Recalcula el precio total
     };
 
     // Maneja la acción de aceptar la compra
@@ -43,13 +44,19 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove }) => {
                                 <span className="product-price">${product.precio}</span>
                             </div>
                             <div className="quantity-control">
-                                <input
-                                    type="number"
-                                    value={quantity}
-                                    min="0"
-                                    onChange={(e) => handleQuantityChange(product.id, parseInt(e.target.value) || 0)} // Asegura que sea un número válido
-                                    className="quantity-input"
-                                />
+                                <button
+                                    onClick={() => handleQuantityChange(product.id, -1)}
+                                    className="quantity-btn decrement-btn"
+                                >
+                                    -
+                                </button>
+                                <span className="quantity-display">{quantity}</span>
+                                <button
+                                    onClick={() => handleQuantityChange(product.id, 1)}
+                                    className="quantity-btn increment-btn"
+                                >
+                                    +
+                                </button>
                                 <button
                                     onClick={() => onRemove(product.id)}
                                     className="remove-btn"

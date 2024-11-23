@@ -1,7 +1,7 @@
-// src/components/ProductList.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SelectedProducts from './SelectedProducts';
+import SideMenu from './SideMenu'; // Importamos el menú lateral
 import '../styles/ProductList.css';
 
 const ProductList = () => {
@@ -55,35 +55,45 @@ const ProductList = () => {
         products.filter(product => product.descripcion === description);
 
     return (
-        <div className="menu-container">
-            <div className="section-buttons">
-                <button onClick={() => setCurrentSection('menu')} className={`section-btn ${currentSection === 'menu' ? 'active' : ''}`}>
-                    Menú
-                </button>
-                <button onClick={() => setCurrentSection('bebidas')} className={`section-btn ${currentSection === 'bebidas' ? 'active' : ''}`}>
-                    Bebidas
-                </button>
-            </div>
+        <div className="container-fluid">
+            <div className="row">
+                {/* Menú lateral */}
+                <div className="col-md-3 bg-light sidebar">
+                    <SideMenu />
+                </div>
 
-            <div className="category-container">
-                {currentSection === 'menu' && (
-                    <>
-                        <Category title="Combos Personales" products={filteredProducts('Combos personales')} onAdd={handleAddProduct} />
-                        <Category title="Promoción" products={filteredProducts('Promoción')} onAdd={handleAddProduct} />
-                        <Category title="Porciones" products={filteredProducts('Porciones')} onAdd={handleAddProduct} />
-                    </>
-                )}
-                {currentSection === 'bebidas' && (
-                    <Category title="Bebidas" products={filteredProducts('Bebidas')} onAdd={handleAddProduct} />
-                )}
-            </div>
+                {/* Contenido principal */}
+                <div className="col-md-9">
+                    <div className="section-buttons">
+                        <button onClick={() => setCurrentSection('menu')} className={`section-btn ${currentSection === 'menu' ? 'active' : ''}`}>
+                            Menú
+                        </button>
+                        <button onClick={() => setCurrentSection('bebidas')} className={`section-btn ${currentSection === 'bebidas' ? 'active' : ''}`}>
+                            Bebidas
+                        </button>
+                    </div>
 
-            <div className="selected-products-container">
-                <SelectedProducts
-                    selectedProducts={selectedProducts}
-                    onUpdateQuantity={handleUpdateQuantity}
-                    onRemove={handleRemoveProduct}
-                />
+                    <div className="category-container">
+                        {currentSection === 'menu' && (
+                            <>
+                                <Category title="Combos Personales" products={filteredProducts('Combos personales')} onAdd={handleAddProduct} />
+                                <Category title="Promoción" products={filteredProducts('Promoción')} onAdd={handleAddProduct} />
+                                <Category title="Porciones" products={filteredProducts('Porciones')} onAdd={handleAddProduct} />
+                            </>
+                        )}
+                        {currentSection === 'bebidas' && (
+                            <Category title="Bebidas" products={filteredProducts('Bebidas')} onAdd={handleAddProduct} />
+                        )}
+                    </div>
+
+                    <div className="selected-products-container">
+                        <SelectedProducts
+                            selectedProducts={selectedProducts}
+                            onUpdateQuantity={handleUpdateQuantity}
+                            onRemove={handleRemoveProduct}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );
