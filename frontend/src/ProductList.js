@@ -19,7 +19,7 @@ const ProductList = ({ products }) => {
         }
     };
 
-    const handleUpdateQuantity = async (id, newQuantity) => {
+    const handleUpdateQuantity = (id, newQuantity) => {
         if (newQuantity <= 0) {
             handleRemoveProduct(id);
         } else {
@@ -28,12 +28,16 @@ const ProductList = ({ products }) => {
                     p.product.id === id ? { ...p, quantity: newQuantity } : p
                 )
             );
-            // Aquí podrías realizar la llamada a la API si no lo haces en SelectedProducts
         }
     };
 
     const handleRemoveProduct = (id) => {
         setSelectedProducts(selectedProducts.filter(p => p.product.id !== id));
+    };
+
+    // Función para limpiar el carrito
+    const clearCart = () => {
+        setSelectedProducts([]);
     };
 
     const categories = [...new Set(products.map(product => product.category))];
@@ -52,7 +56,6 @@ const ProductList = ({ products }) => {
 
                 <div className="category-container">
                     {categories.map((category) => {
-                        // Solo muestra categorías según la sección seleccionada
                         if (
                             (currentSection === 'menu' && category !== 'Bebidas') ||
                             (currentSection === 'bebidas' && category === 'Bebidas')
@@ -86,10 +89,12 @@ const ProductList = ({ products }) => {
                     selectedProducts={selectedProducts}
                     onUpdateQuantity={handleUpdateQuantity}
                     onRemove={handleRemoveProduct}
+                    clearCart={clearCart} // Pasa la función clearCart
                 />
             </div>
         </div>
     );
 };
+
 
 export default ProductList;

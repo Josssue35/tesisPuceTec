@@ -82,7 +82,12 @@ const ProductList = () => {
                             </>
                         )}
                         {currentSection === 'bebidas' && (
-                            <Category title="Bebidas" products={filteredProducts('Bebidas')} onAdd={handleAddProduct} />
+                            <>
+                                <Category title="Gaseosas" products={filteredProducts('Gaseosa')} onAdd={handleAddProduct} />
+                                <Category title="Tea" products={filteredProducts('Tea')} onAdd={handleAddProduct} />
+                                <Category title="Jugos" products={filteredProducts('Jugo')} onAdd={handleAddProduct} />
+                                <Category title="Agua" products={filteredProducts('Agua')} onAdd={handleAddProduct} />
+                            </>
                         )}
                     </div>
 
