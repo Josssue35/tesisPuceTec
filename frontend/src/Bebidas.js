@@ -1,6 +1,5 @@
-// src/BeverageList.js
 import React, { useState } from 'react';
-import SelectedProducts from './SelectedProducts';
+import SelectedProducts from './components/SelectedProducts';
 import './styles.css';
 
 const BeverageList = ({ beverages }) => {

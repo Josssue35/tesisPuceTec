@@ -1,0 +1,68 @@
+/* src/styles/SideMenu.css */
+
+/* Contenedor principal del menú */
+.side-menu {
+    width: 250px;
+    height: 100vh;
+    background-color: #1E3A5F;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+}
+
+/* Logo */
+.logo-container {
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #fea9005f;
+}
+
+.logo-image {
+    width: 180px;
+    /* Aumenta el tamaño de la imagen */
+    height: auto;
+    /* Mantén la relación de aspecto */
+    object-fit: contain;
+    /* Asegura que la imagen se ajuste sin distorsionarse */
+    cursor: pointer;
+}
+
+/* Opciones del menú */
+.menu-options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-item:hover {
+    background-color: #ff6b3582;
+    color: #FFFFFF;
+}
+
+/* Iconos */
+.menu-item i {
+    font-size: 30px;
+    color: #FF6B35;
+}

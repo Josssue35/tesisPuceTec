@@ -1,0 +1,67 @@
+/* src/styles/HomePage.css */
+
+/* Fondo general */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #F5F7FA 0%, #E4ECF1 100%);
+}
+
+/* Contenedor principal de la página de inicio */
+.homepage-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.homepage-title {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #1E3A5F;
+}
+
+/* Contenedor de los enlaces */
+.section-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Tarjetas de las secciones */
+.section-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    background-color: #FFFFFF;
+    color: #1E3A5F;
+    text-decoration: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.section-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo de los íconos */
+.section-card i {
+    font-size: 40px;
+    margin-bottom: 10px;
+    color: #FF6B35;
+}
+
+/* Texto dentro de la tarjeta */
+.section-card span {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333333;
+}
