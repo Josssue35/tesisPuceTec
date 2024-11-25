@@ -1,0 +1,275 @@
+/* Fondo con degradado */
+body {
+    background: linear-gradient(135deg, #E4ECF1 0%, #D1DDE6 100%);
+    color: #333333;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    /* Reducido */
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+
+    width: 100%;
+}
+
+.section-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex: 1;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+}
+
+.section-btn {
+    padding: 8px 15px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    background-color: #1E3A5F;
+    color: #FFFFFF;
+    transition: background-color 0.3s ease;
+
+}
+
+.section-btn.active,
+.section-btn:hover {
+    background-color: #1B6CA8;
+}
+
+
+.category-container {
+    margin-top: 15px;
+
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1000px;
+
+    gap: 30px;
+
+    flex-wrap: wrap;
+}
+
+.category {
+    flex: 1 1 32%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+
+    background-color: #FFFFFF;
+    border-radius: 6px;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.category h3 {
+    font-size: 20px;
+
+    color: #1E3A5F;
+    border-bottom: 2px solid #FF6B35;
+    padding-bottom: 4px;
+
+    margin-bottom: 12px;
+
+    text-align: center;
+    width: 100%;
+}
+
+.product-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    width: 100%;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+
+    border-radius: 8px;
+
+    background-color: #FFFFFF;
+    color: #333333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    flex: 1 1 48%;
+
+    margin-bottom: 8px;
+
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.product-name {
+    font-weight: bold;
+    font-size: 14px;
+
+    color: #333333;
+    margin: 0;
+}
+
+.product-price {
+    font-size: 14px;
+
+    font-weight: bold;
+    color: #1B6CA8;
+    margin-top: 4px;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.quantity-btn {
+    padding: 4px 8px;
+
+    font-size: 14px;
+
+    border: none;
+    background-color: #1E3A5F;
+    color: #FFFFFF;
+    cursor: pointer;
+    border-radius: 4px;
+
+    transition: background-color 0.3s ease;
+}
+
+.quantity-btn:hover {
+    background-color: #1B6CA8;
+}
+
+.quantity-display {
+    font-size: 14px;
+
+    font-weight: bold;
+    color: #333333;
+    text-align: center;
+    min-width: 25px;
+
+}
+
+.quantity-input {
+    width: 40px;
+
+    padding: 4px;
+
+    font-size: 14px;
+
+    margin-right: 8px;
+
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+
+    text-align: center;
+}
+
+.remove-btn {
+    background-color: #FF6B35;
+    color: #FFFFFF;
+    border: none;
+    padding: 4px 8px;
+
+    margin-left: 4px;
+
+    border-radius: 4px;
+
+    cursor: pointer;
+    font-size: 12px;
+
+}
+
+.remove-btn:hover {
+    background-color: #CC562B;
+}
+
+
+.selected-products-container {
+    position: fixed;
+    right: 15px;
+
+    top: 15px;
+
+    background-color: #FFFFFF;
+    color: #333333;
+    padding: 15px;
+
+    border-radius: 8px;
+
+    max-width: 280px;
+
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: 70vh;
+
+}
+
+.total-price {
+    font-size: 16px;
+
+    font-weight: bold;
+    text-align: center;
+    margin-top: 15px;
+
+    color: #1B6CA8;
+}
+
+.accept-btn {
+    width: 100%;
+    padding: 8px;
+
+    background-color: #1E3A5F;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 4px;
+
+    cursor: pointer;
+    font-size: 14px;
+
+}
+
+.accept-btn:hover {
+    background-color: #1B6CA8;
+}
+
+.product-btn {
+    padding: 6px;
+
+    font-size: 14px;
+
+    border: none;
+    background-color: #1E3A5F;
+    color: #FFFFFF;
+    cursor: pointer;
+    border-radius: 5px;
+
+
+    transition: background-color 0.3s ease;
+}
+
+.product-btn:hover {
+    background-color: #1B6CA8;
+}
