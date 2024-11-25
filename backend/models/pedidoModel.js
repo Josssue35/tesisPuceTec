@@ -41,22 +41,26 @@ async function createPedido(productos) {
     }
 }
 
-// Obtener todos los pedidos
+// Obtener todos los pedidos con sus detalles
 async function obtenerPedidos() {
     const client = await pool.connect();
     try {
-        // Consulta para obtener los pedidos y los detalles relacionados
+        // Consulta para obtener los pedidos y sus detalles relacionados
         const result = await client.query(`
             SELECT 
                 p.id AS pedido_id,
                 dp.id AS detalle_id,
-                dp.producto_id,
                 pr.nombre AS producto_nombre,
                 dp.cantidad,
-                dp.precio
+                dp.precio,
+                pr.descripcion AS producto_descripcion,
+                pr.categoria_id,
+                c.nombre AS categoria_nombre,
+                p.fecha AS fecha_pedido
             FROM pedidos p
             JOIN detalle_pedido dp ON p.id = dp.pedido_id
             JOIN productos pr ON dp.producto_id = pr.id
+            JOIN categorias c ON pr.categoria_id = c.id
             ORDER BY p.id DESC
         `);
         return result.rows; // Devuelve los resultados de la consulta
