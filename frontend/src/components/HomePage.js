@@ -1,8 +1,6 @@
-// src/components/HomePage.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/HomePage.css';
-
 
 const HomePage = () => {
     return (
@@ -20,6 +18,10 @@ const HomePage = () => {
                 <Link to="/admin" className="section-card">
                     <i className="bi bi-person-circle"></i>
                     <span>Administrador</span>
+                </Link>
+                <Link to="/orders" className="section-card">
+                    <i className="bi bi-receipt"></i>
+                    <span>Pedidos</span>
                 </Link>
             </div>
         </div>
