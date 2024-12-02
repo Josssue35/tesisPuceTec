@@ -52,22 +52,28 @@ body {
 
 .category-container {
     margin-top: 15px;
+
     display: flex;
     justify-content: space-between;
     width: 100%;
     max-width: 1000px;
+
     gap: 30px;
+
     flex-wrap: wrap;
 }
 
 .category {
     flex: 1 1 32%;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 8px;
+
     background-color: #FFFFFF;
     border-radius: 6px;
+
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -86,26 +92,28 @@ body {
 
 .product-list {
     display: flex;
-    flex-direction: column;
-    /* Alinear productos en columna */
-    gap: 10px;
-    /* Espacio entre los productos */
+    flex-wrap: wrap;
+    gap: 8px;
+
     width: 100%;
 }
 
 .product-item {
     display: flex;
     justify-content: space-between;
-    /* Separar el botón del precio */
     align-items: center;
     padding: 8px;
-    border: 1px solid #ddd;
-    /* Opcional: agregar un borde */
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    /* Color de fondo opcional */
-    width: 100%;
-    /* Alinear al ancho de la categoría */
+
+    border-radius: 8px;
+
+    background-color: #FFFFFF;
+    color: #333333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    flex: 1 1 48%;
+
+    margin-bottom: 8px;
+
 }
 
 .product-info {

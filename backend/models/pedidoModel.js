@@ -8,7 +8,7 @@ async function createPedido(productos) {
 
         // Insertar el pedido en la tabla "pedidos"
         const pedidoResult = await client.query(
-            `INSERT INTO pedidos (fecha_pedido) VALUES (NOW()) RETURNING id`
+            `INSERT INTO pedidos (fecha) VALUES (NOW()) RETURNING id`
         );
         const pedidoId = pedidoResult.rows[0].id;
 
@@ -16,7 +16,7 @@ async function createPedido(productos) {
         for (const producto of productos) {
             const { productId, quantity, price } = producto;
             await client.query(
-                `INSERT INTO detalles_pedido (pedido_id, producto_id, cantidad, precio)
+                `INSERT INTO detalle_pedido (pedido_id, producto_id, cantidad, precio)
                  VALUES ($1, $2, $3, $4)`,
                 [pedidoId, productId, quantity, price]
             );
@@ -58,7 +58,7 @@ async function obtenerPedidos() {
                 c.nombre AS categoria_nombre,
                 p.fecha AS fecha_pedido
             FROM pedidos p
-            JOIN detalles_pedido dp ON p.id = dp.pedido_id
+            JOIN detalle_pedido dp ON p.id = dp.pedido_id
             JOIN productos pr ON dp.producto_id = pr.id
             JOIN categorias c ON pr.categoria_id = c.id
             ORDER BY p.id DESC

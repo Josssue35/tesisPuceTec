@@ -55,15 +55,15 @@ const ProductList = () => {
         products.filter(product => product.descripcion === description);
 
     return (
-        <div >
+        <div className="container-fluid">
             <div className="row">
                 {/* Menú lateral */}
-                <div>
+                <div className="col-md-3 bg-light sidebar">
                     <SideMenu />
                 </div>
 
                 {/* Contenido principal */}
-                <div>
+                <div className="col-md-9">
                     <div className="section-buttons">
                         <button onClick={() => setCurrentSection('menu')} className={`section-btn ${currentSection === 'menu' ? 'active' : ''}`}>
                             Menú
