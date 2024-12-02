@@ -4,7 +4,7 @@ import './App.css'; // Mantener la importación de App.css
 import Login from './components/Login'; // Mantener la importación de Login desde la rama loggin
 import ProductList from './components/ProductList';
 import HomePage from './components/HomePage';
-import OrdersPage from './components/Orders';
+import OrdersPage from './components/OrderPage';
 import Reports from './components/Reports'; // Importar Reports desde la rama modeloFront
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
