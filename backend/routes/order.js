@@ -5,13 +5,20 @@ const { createPedido, obtenerPedidos } = require('../models/pedidoModel');
 
 // Ruta para crear un nuevo pedido
 router.post('/', async (req, res) => {
-    const { productos } = req.body;
+    const { userId, productos } = req.body;
+
+
+    if (!userId || !productos || productos.length === 0) {
+        return res.status(400).json({ message: 'Datos incompletos: userId y productos son requeridos.' });
+    }
+
     try {
-        const result = await createPedido(productos);
+        // Llama a tu función para guardar el pedido en la base de datos
+        const result = await createPedido(userId, productos);
         res.status(201).json({ message: 'Pedido creado con éxito', pedidoId: result.pedidoId });
     } catch (error) {
         console.error('Error al procesar el pedido:', error);
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: 'Error interno al procesar el pedido.' });
     }
 });
 

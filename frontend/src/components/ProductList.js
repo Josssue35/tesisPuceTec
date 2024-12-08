@@ -55,52 +55,51 @@ const ProductList = () => {
         products.filter(product => product.descripcion === description);
 
     return (
-        <div className="container-fluid">
-            <div className="row">
-                {/* Menú lateral */}
-                <div className="col-md-3 bg-light sidebar">
-                    <SideMenu />
+        <div className="row">
+            {/* Menú lateral */}
+            <div className="col-md-2">
+                <SideMenu />
+            </div>
+
+            {/* Contenido principal */}
+            <div className="col-md-10">
+                <div className="section-buttons">
+                    <button onClick={() => setCurrentSection('menu')} className={`section-btn ${currentSection === 'menu' ? 'active' : ''}`}>
+                        Menú
+                    </button>
+                    <button onClick={() => setCurrentSection('bebidas')} className={`section-btn ${currentSection === 'bebidas' ? 'active' : ''}`}>
+                        Bebidas
+                    </button>
                 </div>
 
-                {/* Contenido principal */}
-                <div className="col-md-9">
-                    <div className="section-buttons">
-                        <button onClick={() => setCurrentSection('menu')} className={`section-btn ${currentSection === 'menu' ? 'active' : ''}`}>
-                            Menú
-                        </button>
-                        <button onClick={() => setCurrentSection('bebidas')} className={`section-btn ${currentSection === 'bebidas' ? 'active' : ''}`}>
-                            Bebidas
-                        </button>
-                    </div>
+                <div className="category-container">
+                    {currentSection === 'menu' && (
+                        <>
+                            <Category title="Combos Personales" products={filteredProducts('Combos personales')} onAdd={handleAddProduct} />
+                            <Category title="Promoción" products={filteredProducts('Promoción')} onAdd={handleAddProduct} />
+                            <Category title="Porciones" products={filteredProducts('Porciones')} onAdd={handleAddProduct} />
+                        </>
+                    )}
+                    {currentSection === 'bebidas' && (
+                        <>
+                            <Category title="Gaseosas" products={filteredProducts('Gaseosa')} onAdd={handleAddProduct} />
+                            <Category title="Tea" products={filteredProducts('Tea')} onAdd={handleAddProduct} />
+                            <Category title="Jugos" products={filteredProducts('Jugo')} onAdd={handleAddProduct} />
+                            <Category title="Agua" products={filteredProducts('Agua')} onAdd={handleAddProduct} />
+                        </>
+                    )}
+                </div>
 
-                    <div className="category-container">
-                        {currentSection === 'menu' && (
-                            <>
-                                <Category title="Combos Personales" products={filteredProducts('Combos personales')} onAdd={handleAddProduct} />
-                                <Category title="Promoción" products={filteredProducts('Promoción')} onAdd={handleAddProduct} />
-                                <Category title="Porciones" products={filteredProducts('Porciones')} onAdd={handleAddProduct} />
-                            </>
-                        )}
-                        {currentSection === 'bebidas' && (
-                            <>
-                                <Category title="Gaseosas" products={filteredProducts('Gaseosa')} onAdd={handleAddProduct} />
-                                <Category title="Tea" products={filteredProducts('Tea')} onAdd={handleAddProduct} />
-                                <Category title="Jugos" products={filteredProducts('Jugo')} onAdd={handleAddProduct} />
-                                <Category title="Agua" products={filteredProducts('Agua')} onAdd={handleAddProduct} />
-                            </>
-                        )}
-                    </div>
-
-                    <div className="selected-products-container">
-                        <SelectedProducts
-                            selectedProducts={selectedProducts}
-                            onUpdateQuantity={handleUpdateQuantity}
-                            onRemove={handleRemoveProduct}
-                        />
-                    </div>
+                <div className="selected-products-container">
+                    <SelectedProducts
+                        selectedProducts={selectedProducts}
+                        onUpdateQuantity={handleUpdateQuantity}
+                        onRemove={handleRemoveProduct}
+                    />
                 </div>
             </div>
         </div>
+
     );
 };
 

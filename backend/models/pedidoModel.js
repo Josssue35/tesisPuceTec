@@ -1,14 +1,15 @@
 const pool = require('../config/database.js');
 
 // Crear un nuevo pedido
-async function createPedido(productos) {
+async function createPedido(userId, productos) {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
 
-        // Insertar el pedido en la tabla "pedidos"
+        // Insertar el pedido en la tabla "pedidos", incluyendo el userId
         const pedidoResult = await client.query(
-            `INSERT INTO pedidos (fecha) VALUES (NOW()) RETURNING id`
+            `INSERT INTO pedidos (usuario, fecha) VALUES ($1, NOW()) RETURNING id`,
+            [userId]
         );
         const pedidoId = pedidoResult.rows[0].id;
 
@@ -40,6 +41,7 @@ async function createPedido(productos) {
         client.release();
     }
 }
+
 
 // Obtener todos los pedidos con sus detalles
 async function obtenerPedidos() {

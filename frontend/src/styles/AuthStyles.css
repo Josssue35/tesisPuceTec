@@ -1,0 +1,100 @@
+.auth-container {
+    position: relative;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+}
+
+.form-container-modern {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 3rem 2rem;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 1;
+}
+
+.form-container-modern h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.form-container-modern p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    color: #555;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f9f9f9;
+    outline: none;
+    box-sizing: border-box;
+    /* Asegura que el padding no afecte el tamaño del input */
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    border-color: #007bff;
+}
+
+#login {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    background: #007bff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-sizing: border-box;
+    /* Asegura que el padding no afecte el tamaño del botón */
+}
+
+button:hover {
+    background: #0056b3;
+}
+
+.secondary-button {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #007bff;
+    color: #007bff;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s, color 0.3s;
+    box-sizing: border-box;
+    /* Asegura que el padding no afecte el tamaño del botón secundario */
+}
+
+.secondary-button:hover {
+    background: #007bff;
+    color: #fff;
+}
