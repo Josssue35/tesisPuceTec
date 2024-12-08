@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import ProductList from './components/ProductList';
 import HomePage from './components/HomePage';
-import OrdersPage from './Orders';
+import OrdersPage from './components/OrderPage'; // Asegúrate de que esta sea la importación correcta
 import Reports from './components/Reports'; // Importar Reports desde la rama modeloFront
 
 function App() {
