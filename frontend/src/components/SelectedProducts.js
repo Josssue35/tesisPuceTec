@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Asegúrate de tener axios instalado
-import '../styles/ProductList.css'; // Asegúrate de que la ruta sea correcta
+import axios from 'axios';
+import '../styles/ProductList.css';
 
 const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearCart }) => {
     const [totalPrice, setTotalPrice] = useState(0);
@@ -8,7 +8,7 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
     // Calcula el precio total
     useEffect(() => {
         const total = selectedProducts.reduce((sum, { product, quantity }) => {
-            return sum + parseFloat(product.precio) * quantity; // Usamos parseFloat para asegurar que el precio sea un número
+            return sum + parseFloat(product.precio) * quantity;
         }, 0);
         setTotalPrice(total);
     }, [selectedProducts]);
@@ -16,7 +16,7 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
     // Maneja el cambio de cantidad
     const handleQuantityChange = (id, change) => {
         const product = selectedProducts.find((p) => p.product.id === id);
-        const newQuantity = Math.max(0, (product.quantity || 0) + change); // Asegura que la cantidad no sea negativa
+        const newQuantity = Math.max(0, (product.quantity || 0) + change);
         onUpdateQuantity(id, newQuantity);
     };
 
@@ -27,13 +27,20 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
         }
 
         try {
-            const pedidoData = selectedProducts.map(({ product, quantity }) => ({
-                productId: product.id,
-                quantity: quantity,
-                price: product.precio,
-            }));
 
-            const response = await axios.post('/api/pedido', { productos: pedidoData });
+            const userId = localStorage.getItem('fullname');
+
+            const pedidoData = {
+                userId: userId,
+                productos: selectedProducts.map(({ product, quantity }) => ({
+                    productId: product.id,
+                    quantity: quantity,
+                    price: product.precio,
+                })),
+            };
+
+            // Envía la solicitud al servidor
+            const response = await axios.post('/api/pedido', pedidoData);
 
             console.log('Pedido creado:', response.data);
             alert(`Compra aceptada! Total: $${totalPrice.toFixed(2)}`);
@@ -46,9 +53,11 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
             }
         } catch (error) {
             console.error('Error al realizar la compra:', error);
+
             alert('Hubo un problema al procesar el pedido. Por favor, intenta de nuevo.');
         }
     };
+
 
 
     return (

@@ -11,7 +11,7 @@ const SideMenu = () => {
         <div className="side-menu">
             {/* Logo */}
             <div className="logo-container">
-                <Link to="/">
+                <Link to="/homepage">
                     <img
                         src={logo}
                         alt="Logo"

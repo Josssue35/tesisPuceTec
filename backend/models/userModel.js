@@ -3,8 +3,8 @@ const bcrypt = require('bcryptjs');
 
 // Crear un nuevo usuario
 async function createUser(cedula, password, fullname, role = 'user') {
-    if (!cedula || !password || !fullname || !countryId) {
-        throw new Error('Todos los campos (cedula, password, Nombre Completo) son requeridos');
+    if (!cedula || !password || !fullname) {
+        throw new Error('Todos los campos (Cedula, Password, Nombre Completo) son requeridos');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -29,7 +29,7 @@ async function findUser(cedula, password) {
 
     try {
         const result = await pool.query(
-            'SELECT id, cedula, password, role FROM usuarios WHERE cedula = $1',
+            'SELECT id, cedula, password, role, full_name FROM usuarios WHERE cedula = $1',
             [cedula]
         );
 
@@ -40,7 +40,8 @@ async function findUser(cedula, password) {
                 return {
                     id: user.id,
                     cedula: user.cedula,
-                    role: user.role
+                    role: user.role,
+                    fullname: user.full_name
                 };
             }
         }

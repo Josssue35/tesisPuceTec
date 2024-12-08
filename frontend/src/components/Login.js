@@ -27,11 +27,14 @@ const Login = () => {
                 body: JSON.stringify({ cedula, password }),
             });
             const userData = await response.json();
+            console.log(userData)
             if (response.status === 200) {
                 console.log('Login successful:', userData);
                 localStorage.setItem('userId', userData.id);
                 localStorage.setItem('cedula', userData.cedula);
                 localStorage.setItem('userRole', userData.role);
+                localStorage.setItem('fullname', userData.fullname);
+
                 navigate('/homepage');
             } else {
                 toast.error('Nombre de usuario o contraseña incorrectos.', {

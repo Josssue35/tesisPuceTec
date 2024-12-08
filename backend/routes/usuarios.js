@@ -25,12 +25,13 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'Se requieren usuario y contraseña' });
         }
 
-        const user = await findUser(cedula, password); // Usar findUser directamente
+        const user = await findUser(cedula, password);
         if (user) {
             res.json({
                 id: user.id,
                 cedula: user.cedula,
-                role: user.role
+                role: user.role,
+                fullname: user.fullname,
             });
         } else {
             res.status(401).json({ message: 'Credenciales inválidas' });
