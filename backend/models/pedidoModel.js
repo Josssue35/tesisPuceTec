@@ -1,15 +1,23 @@
 const pool = require('../config/database.js');
 
+const fechaEcuador = new Date();
+fechaEcuador.setHours(fechaEcuador.getHours() - 5); // Ajustar a UTC-5 (zona horaria de Ecuador)
+
+console.log(fechaEcuador); // Te da la fecha con la zona horaria de Ecuador
+
+
+
 // Crear un nuevo pedido
-async function createPedido(userId, productos) {
+async function createPedido(userId, totalPrice, productos) {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
 
         // Insertar el pedido en la tabla "pedidos", incluyendo el userId
         const pedidoResult = await client.query(
-            `INSERT INTO pedidos (usuario, fecha) VALUES ($1, NOW()) RETURNING id`,
-            [userId]
+            `INSERT INTO pedidos (usuario, total_compra, fecha) 
+            VALUES ($1, $2, $3) RETURNING id`,
+            [userId, totalPrice, fechaEcuador]
         );
         const pedidoId = pedidoResult.rows[0].id;
 
@@ -58,7 +66,7 @@ async function obtenerPedidos() {
                 pr.descripcion AS producto_descripcion,
                 pr.categoria_id,
                 c.nombre AS categoria_nombre,
-                p.fecha AS fecha_pedido
+                p.fecha AT TIME ZONE 'UTC' AT TIME ZONE 'America/Guayaquil' AS fecha_pedido
             FROM pedidos p
             JOIN detalle_pedido dp ON p.id = dp.pedido_id
             JOIN productos pr ON dp.producto_id = pr.id
@@ -74,4 +82,27 @@ async function obtenerPedidos() {
     }
 }
 
-module.exports = { createPedido, obtenerPedidos };
+async function obtenerPedidosTotal() {
+    const client = await pool.connect();
+    try {
+
+        const result = await client.query(`
+            SELECT 
+                p.id ,p.fecha, p.usuario, p.total_compra
+            FROM pedidos p
+            ORDER BY p.fecha DESC
+        `);
+        console.log(result.rows);
+        return result.rows;
+    } catch (error) {
+        console.error('Error al obtener los pedidos:', error);
+        throw new Error('Error al obtener los pedidos');
+    } finally {
+        client.release();
+    }
+}
+
+
+
+
+module.exports = { createPedido, obtenerPedidos, obtenerPedidosTotal };

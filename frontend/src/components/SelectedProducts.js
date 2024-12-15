@@ -32,6 +32,7 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
 
             const pedidoData = {
                 userId: userId,
+                totalPrice: parseFloat(totalPrice),
                 productos: selectedProducts.map(({ product, quantity }) => ({
                     productId: product.id,
                     quantity: quantity,
@@ -41,7 +42,7 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
 
             // Envía la solicitud al servidor
             const response = await axios.post('/api/pedido', pedidoData);
-
+            console.log(totalPrice)
             console.log('Pedido creado:', response.data);
             alert(`Compra aceptada! Total: $${totalPrice.toFixed(2)}`);
 
