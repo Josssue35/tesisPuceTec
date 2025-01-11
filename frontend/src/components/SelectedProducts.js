@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import '../styles/ProductList.css';
 
 const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearCart }) => {
@@ -22,12 +23,15 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
 
     const handleAcceptPurchase = async () => {
         if (selectedProducts.length === 0) {
-            alert('No tienes productos seleccionados para comprar.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'No tienes productos seleccionados para comprar.',
+            });
             return;
         }
 
         try {
-
             const userId = localStorage.getItem('fullname');
 
             const pedidoData = {
@@ -40,22 +44,33 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
                 })),
             };
 
-            // Envía la solicitud al servidor
             const response = await axios.post('/api/pedido', pedidoData);
-            console.log(totalPrice)
+            console.log(totalPrice);
             console.log('Pedido creado:', response.data);
-            alert(`Compra aceptada! Total: $${totalPrice.toFixed(2)}`);
 
-            // Limpia el carrito después de una compra exitosa
-            if (typeof clearCart === 'function') {
-                clearCart();
-            } else {
-                console.warn('clearCart no está definida o no es una función.');
-            }
+            Swal.fire({
+                icon: 'success',
+                title: 'Compra exitosa',
+                text: `Total: $${totalPrice.toFixed(2)}`,
+                confirmButtonText: 'Aceptar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    if (typeof clearCart === 'function') {
+                        clearCart();
+                    } else {
+                        console.warn('clearCart no está definida o no es una función.');
+                    }
+                }
+            });
         } catch (error) {
             console.error('Error al realizar la compra:', error);
 
-            alert('Hubo un problema al procesar el pedido. Por favor, intenta de nuevo.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un problema al procesar el pedido. Por favor, intenta de nuevo.',
+            });
         }
     };
 

@@ -1,0 +1,175 @@
+.staff-container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.staff-content {
+    display: flex;
+    gap: 20px;
+}
+
+/* Columna izquierda: Tabla de empleados */
+.staff-table-container {
+    flex: 2;
+}
+
+/* Columna derecha: Formulario de creación */
+.staff-form-container {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.staff-form-container h2 {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+/* Título */
+.staff-title {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Tabla */
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Cabecera de la tabla */
+.staff-table thead {
+    background-color: #1e3a5f;
+    color: #ffffff;
+}
+
+.staff-table th {
+    padding: 16px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+}
+
+/* Celdas de la tabla */
+.staff-table td {
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+/* Centrar el ícono en la columna de acciones */
+.staff-table td.actions {
+    text-align: center;
+}
+
+/* Efecto hover en las filas */
+.staff-table tbody tr:hover {
+    background-color: #f1f1f1;
+    transition: background-color 0.3s ease;
+}
+
+/* Badge para el rol */
+.role-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.role-badge.admin {
+    background-color: #af4c4c;
+    /* Verde para admin */
+    color: #ffffff;
+}
+
+.role-badge.user {
+    background-color: #2196f3;
+    /* Azul para user */
+    color: #ffffff;
+}
+
+/* Badge para el estado */
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.status-badge.active {
+    background-color: #4caf50;
+    /* Verde para activo */
+    color: #ffffff;
+}
+
+.status-badge.inactive {
+    background-color: #e74c3c;
+    /* Rojo para inactivo */
+    color: #ffffff;
+}
+
+/* Botón de edición */
+.edit-button {
+    background: none;
+    border: none;
+    color: #000000;
+    /* Color amarillo para el ícono */
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.edit-button:hover {
+    color: #e0a800;
+    /* Color amarillo oscuro al hacer hover */
+}
+
+/* Mensajes de carga y error */
+.loading,
+.error {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #2c3e50;
+    margin-top: 20px;
+}
+
+.error {
+    color: #e74c3c;
+}
+
+/* Botón de eliminar */
+.delete-button {
+    background: none;
+    border: none;
+    color: #e74c3c;
+    /* Color rojo para el ícono */
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-left: 10px;
+    /* Espacio entre el botón de editar y eliminar */
+    transition: color 0.3s ease;
+}
+
+.delete-button:hover {
+    color: #c0392b;
+    /* Color rojo oscuro al hacer hover */
+}

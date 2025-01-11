@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { createUser, findUser } = require('../models/userModel'); // Importar correctamente
+const { createUser, findUser, getAllUsers, deleteUser, createUserAdmin, updateUser } = require('../models/userModel');
 
-// Ruta para registrar un nuevo usuario
+
 router.post('/register', async (req, res) => {
     const { cedula, password, full_name, } = req.body;
     try {
         if (!cedula || !password || !full_name) {
             return res.status(400).json({ error: 'Todos los campos son requeridos' });
         }
-        const user = await createUser(cedula, password, full_name); // Usar createUser directamente
+        const user = await createUser(cedula, password, full_name);
         res.status(201).json(user);
     } catch (error) {
         console.error('Error en el registro del usuario:', error);
@@ -17,7 +17,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Ruta de inicio de sesión
+
 router.post('/login', async (req, res) => {
     const { cedula, password } = req.body;
     try {
@@ -42,4 +42,58 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.get('/personal', async (req, res) => {
+    try {
+        const users = await getAllUsers();
+        console.log('Users sent in response:', users);
+        res.json(users);
+    } catch (error) {
+        console.error('Error in /api/usuarios route:', error);
+        res.status(500).json({ message: error.message });
+    }
+});
+
+router.delete('/personal/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await deleteUser(id);
+        res.status(200).json({ message: 'Usuario eliminado correctamente' });
+    } catch (error) {
+        console.error('Error al eliminar el usuario:', error);
+        res.status(500).json({ message: 'Error en el servidor' });
+    }
+});
+
+router.post('/personal/registerAdmin', async (req, res) => {
+    const { cedula, password, full_name, role } = req.body;
+    try {
+        if (!cedula || !password || !full_name || !role) {
+            return res.status(400).json({ error: 'Todos los campos son requeridos' });
+        }
+        const user = await createUserAdmin(cedula, password, full_name, role);
+        res.status(201).json(user);
+    } catch (error) {
+        console.error('Error en el registro del usuario:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+});
+
+router.put('/personal/:id', async (req, res) => {
+    const { id } = req.params;
+    const { cedula, password, fullname, role, active } = req.body;
+
+    try {
+        // Validar campos obligatorios
+        if (!id || !cedula || !fullname || !role || active === undefined) {
+            return res.status(400).json({ message: 'ID, cedula, fullname, role y active son requeridos' });
+        }
+
+        // Actualizar el usuario
+        const updatedUser = await updateUser(id, cedula, password, fullname, role, active);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error('Error al actualizar el usuario:', error);
+        res.status(500).json({ message: error.message || 'Error en el servidor' });
+    }
+});
 module.exports = router;

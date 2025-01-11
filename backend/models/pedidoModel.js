@@ -51,11 +51,10 @@ async function createPedido(userId, totalPrice, productos) {
 }
 
 
-// Obtener todos los pedidos con sus detalles
-async function obtenerPedidos() {
+async function obtenerPedidoPorId(id) {
     const client = await pool.connect();
     try {
-        // Consulta para obtener los pedidos y sus detalles relacionados
+        // Consulta para obtener el pedido y sus detalles relacionados filtrado por ID
         const result = await client.query(`
             SELECT 
                 p.id AS pedido_id,
@@ -71,12 +70,18 @@ async function obtenerPedidos() {
             JOIN detalle_pedido dp ON p.id = dp.pedido_id
             JOIN productos pr ON dp.producto_id = pr.id
             JOIN categorias c ON pr.categoria_id = c.id
+            WHERE p.id = $1
             ORDER BY p.id DESC
-        `);
-        return result.rows; // Devuelve los resultados de la consulta
+        `, [id]); // Parámetro para la consulta SQL
+
+        if (result.rows.length === 0) {
+            throw new Error(`No se encontró ningún pedido con el ID ${id}`);
+        }
+
+        return result.rows; // Devuelve el resultado del pedido encontrado
     } catch (error) {
-        console.error('Error al obtener los pedidos:', error);
-        throw new Error('Error al obtener los pedidos');
+        console.error('Error al obtener el pedido por ID:', error);
+        throw new Error('Error al obtener el pedido por ID');
     } finally {
         client.release();
     }
@@ -105,4 +110,4 @@ async function obtenerPedidosTotal() {
 
 
 
-module.exports = { createPedido, obtenerPedidos, obtenerPedidosTotal };
+module.exports = { createPedido, obtenerPedidoPorId, obtenerPedidosTotal };

@@ -1,22 +1,23 @@
 .auth-container {
-    position: relative;
     display: flex;
     height: 100vh;
     width: 100vw;
-    justify-content: center;
-    align-items: center;
     font-family: 'Arial', sans-serif;
     overflow: hidden;
+    background: #f0f0f0;
+
 }
 
+
 .form-container-modern {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
     background: rgba(255, 255, 255, 0.85);
-    padding: 3rem 2rem;
-    width: 100%;
-    max-width: 400px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    text-align: center;
     z-index: 1;
 }
 
@@ -35,6 +36,8 @@
 .input-group {
     margin-bottom: 1.5rem;
     text-align: left;
+    width: 100%;
+    max-width: 400px;
 }
 
 .input-group label {
@@ -53,7 +56,6 @@
     background: #f9f9f9;
     outline: none;
     box-sizing: border-box;
-    /* Asegura que el padding no afecte el tamaño del input */
     transition: border-color 0.3s;
 }
 
@@ -72,10 +74,9 @@
     cursor: pointer;
     transition: background-color 0.3s;
     box-sizing: border-box;
-    /* Asegura que el padding no afecte el tamaño del botón */
 }
 
-button:hover {
+#login:hover {
     background: #0056b3;
 }
 
@@ -91,10 +92,53 @@ button:hover {
     margin-top: 1rem;
     transition: background-color 0.3s, color 0.3s;
     box-sizing: border-box;
-    /* Asegura que el padding no afecte el tamaño del botón secundario */
 }
 
 .secondary-button:hover {
     background: #007bff;
     color: #fff;
+}
+
+
+.video-container {
+    flex: 1;
+
+    position: relative;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.video-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+}
+
+
+.video-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(86, 74, 0, 0.3);
+    z-index: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .auth-container {
+        flex-direction: column;
+    }
+
+    .form-container-modern {
+        padding: 1rem;
+    }
+
+    .video-container {
+        display: none;
+
+    }
 }

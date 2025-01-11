@@ -3,8 +3,10 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import ProductList from './components/ProductList';
 import HomePage from './components/HomePage';
-import OrdersPage from './components/OrderPage'; // Asegúrate de que esta sea la importación correcta
-import Reports from './components/Reports'; // Importar Reports desde la rama modeloFront
+import OrdersPage from './components/OrderPage';
+import Reports from './components/Reports';
+import Register from './components/Register';
+import Staff from './components/Staff';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/products" element={<ProductList />} />
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/staff" element={<Staff />} />
         </Routes>
       </div>
     </BrowserRouter>

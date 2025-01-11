@@ -1,67 +1,181 @@
-/* src/styles/HomePage.css */
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-/* Fondo general */
+/* Configuración de html y body */
+html,
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #F5F7FA 0%, #E4ECF1 100%);
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    /* Evita scrolls no deseados */
 }
 
-/* Contenedor principal de la página de inicio */
+/* Contenedor principal */
 .homepage-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    /* Asegura que ocupe todo el alto */
+    width: 100vw;
+    /* Asegura que ocupe todo el ancho */
+    background: linear-gradient(135deg, #1e3a5f, #1b6ca8);
+    /* Fondo degradado */
+    color: #fff;
+    font-family: 'Arial', sans-serif;
     text-align: center;
 }
 
+/* Solución adicional para estilos heredados o frameworks */
+body {
+    margin: 0;
+    /* Elimina márgenes del body */
+    padding: 0;
+    /* Elimina padding del body */
+}
+
+/* Título */
 .homepage-title {
-    font-size: 36px;
-    margin-bottom: 20px;
-    color: #1E3A5F;
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Contenedor de los enlaces */
+/* Contenedor de las cards */
 .section-links {
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* 3 columnas de igual tamaño */
     gap: 20px;
+    /* Espacio entre las cards */
+    width: 100%;
+    max-width: 1200px;
+    /* Ancho máximo del contenedor */
+    padding: 20px;
+    overflow-y: auto;
+    /* Permite scroll vertical si es necesario */
 }
 
-/* Tarjetas de las secciones */
+/* Estilos de las cards */
 .section-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    width: 150px;
-    height: 150px;
-    background-color: #FFFFFF;
-    color: #1E3A5F;
-    text-decoration: none;
-    border-radius: 10px;
+    align-items: center;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    color: #fff;
+    transition: transform 0.3s ease, background 0.3s ease;
 }
 
 .section-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.2);
 }
 
-/* Estilo de los íconos */
-.section-card i {
-    font-size: 40px;
-    margin-bottom: 10px;
-    color: #FF6B35;
+.section-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
 }
 
-/* Texto dentro de la tarjeta */
-.section-card span {
-    font-size: 18px;
+.section-text {
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #333333;
+}
+
+/* Contenedor para el usuario y cerrar sesión */
+.user-logout-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Información del usuario */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.user-info i {
+    font-size: 1.2rem;
+}
+
+/* Botón de cerrar sesión */
+.logout-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+.logout-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.logout-button i {
+    font-size: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .homepage-title {
+        font-size: 2rem;
+        /* Tamaño más pequeño para móviles */
+    }
+
+    .section-links {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 columnas en móviles */
+    }
+
+    .section-card {
+        padding: 2rem;
+        /* Menos espacio interno en móviles */
+    }
+
+    .section-icon {
+        font-size: 3rem;
+        /* Íconos más pequeños en móviles */
+    }
+
+    .section-text {
+        font-size: 1.2rem;
+        /* Texto más pequeño en móviles */
+    }
+}
+
+@media (max-width: 480px) {
+    .section-links {
+        grid-template-columns: 1fr;
+        /* 1 columna en pantallas muy pequeñas */
+    }
 }

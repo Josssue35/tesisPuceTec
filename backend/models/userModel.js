@@ -55,7 +55,7 @@ async function findUser(cedula, password) {
 // Obtener todos los usuarios
 async function getAllUsers() {
     try {
-        const result = await pool.query('SELECT id, cedula, full_name, role FROM usuarios');
+        const result = await pool.query('SELECT id, cedula, full_name, role, active FROM usuarios');
         console.log('Users retrieved from database:', result.rows); // Depuración
         return result.rows;
     } catch (error) {
@@ -65,33 +65,38 @@ async function getAllUsers() {
 }
 
 // Actualizar un usuario
-async function updateUser(id, cedula, password, fullname, role) {
-    if (!id || !cedula || !fullname || !role) {
-        throw new Error('ID, cedula, fullname y role son requeridos');
+async function updateUser(id, cedula, password, fullname, role, active) {
+    // Validar campos obligatorios
+    if (!id || !cedula || !fullname || !role || active === undefined) {
+        throw new Error('ID, cedula, fullname, role y active son requeridos');
     }
 
-    let queryParams = [cedula, fullname, role, id];
+    let queryParams = [cedula, fullname, role, active, id];
     let updateQuery = `
-    UPDATE users
-    SET cedula = $1,  full_name = $2,  role = $3`;
+        UPDATE usuarios
+        SET cedula = $1, full_name = $2, role = $3, active = $4`;
 
+    // Si se proporciona una contraseña, incluirla en la consulta
     if (password) {
         const hashedPassword = await bcrypt.hash(password, 10);
-        updateQuery += `, password = $4`;
-        queryParams = [cedula, fullname, role, hashedPassword, id];
+        updateQuery += `, password = $5`;
+        queryParams = [cedula, fullname, role, active, hashedPassword, id];
     }
 
-    updateQuery += ` WHERE id = $${queryParams.length} RETURNING id, cedula, full_name, role`;
+    // Finalizar la consulta
+    updateQuery += ` WHERE id = $${queryParams.length} RETURNING id, cedula, full_name, role, active`;
 
     try {
         const result = await pool.query(updateQuery, queryParams);
+        if (result.rows.length === 0) {
+            throw new Error('Usuario no encontrado');
+        }
         return result.rows[0];
     } catch (error) {
         console.error('Error actualizando el usuario:', error);
         throw new Error('Error en la base de datos durante la actualización del usuario');
     }
 }
-
 // Borrar un usuario
 async function deleteUser(id) {
     try {
@@ -103,10 +108,31 @@ async function deleteUser(id) {
     }
 }
 
+async function createUserAdmin(cedula, password, fullname, role) {
+    if (!cedula || !password || !fullname || !role) {
+        throw new Error('Todos los campos (Cedula, Password, Nombre Completo, Rol) son requeridos');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    try {
+        const newUser = await pool.query(
+            'INSERT INTO usuarios (cedula,  password, full_name, role) VALUES ($1, $2, $3, $4 ) RETURNING id, cedula, full_name, role',
+            [cedula, hashedPassword, fullname, role]
+        );
+        return newUser.rows[0];
+    } catch (error) {
+        console.error('Error creando el usuario:', error);
+        throw new Error('Error en la base de datos durante la creación del usuario');
+    }
+}
+
+
 module.exports = {
     createUser,
     findUser,
     getAllUsers,
     updateUser,
-    deleteUser
+    deleteUser,
+    createUserAdmin
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./Orderstyles.css"; // Importamos los estilos
+import '../styles/Orderstyles.css';
 
 const OrdersPage = () => {
     const [orders, setOrders] = useState([]); // Estado para los pedidos
@@ -10,7 +10,7 @@ const OrdersPage = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get("http://localhost:3000/api/pedido");
+                const response = await axios.get("api/pedido");
                 if (response.status === 200) {
                     setOrders(response.data); // Actualiza el estado con los datos obtenidos
                 } else {

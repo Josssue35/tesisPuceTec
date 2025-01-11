@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SelectedProducts from './SelectedProducts';
-import SideMenu from './SideMenu'; // Importamos el menú lateral
+import AdminSideMenu from './SideMenuAdmin';
 import '../styles/ProductList.css';
 
 const ProductList = () => {
@@ -54,11 +54,15 @@ const ProductList = () => {
     const filteredProducts = (description) =>
         products.filter(product => product.descripcion === description);
 
+    const handleClearCart = () => {
+        setSelectedProducts([]);
+    };
+
     return (
         <div className="row">
             {/* Menú lateral */}
             <div className="col-md-2">
-                <SideMenu />
+                <AdminSideMenu />
             </div>
 
             {/* Contenido principal */}
@@ -95,6 +99,7 @@ const ProductList = () => {
                         selectedProducts={selectedProducts}
                         onUpdateQuantity={handleUpdateQuantity}
                         onRemove={handleRemoveProduct}
+                        clearCart={handleClearCart}
                     />
                 </div>
             </div>
