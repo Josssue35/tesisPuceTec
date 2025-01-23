@@ -39,7 +39,7 @@ const AdminSideMenu = () => {
             <nav className="menu-options">
                 {isAdmin && (
                     <>
-                        <Link to="/inventories" className="menu-item">
+                        <Link to="/inventarios" className="menu-item">
                             <i className="bi bi-boxes"></i>
                             <span>Inventarios</span>
                         </Link>
@@ -47,7 +47,7 @@ const AdminSideMenu = () => {
                             <i className="bi bi-people-fill"></i>
                             <span>Personal</span>
                         </Link>
-                        <Link to="/log" className="menu-item">
+                        <Link to="/bitacora" className="menu-item">
                             <i className="bi bi-journal-text"></i>
                             <span>Bitácora</span>
                         </Link>

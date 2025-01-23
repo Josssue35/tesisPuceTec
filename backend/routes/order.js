@@ -1,7 +1,7 @@
 // routes/order.js
 const express = require('express');
 const router = express.Router();
-const { createPedido, obtenerPedidoPorId, obtenerPedidosTotal } = require('../models/pedidoModel');
+const { createPedido, obtenerPedidoPorId, obtenerPedidosTotal, pedidosTotal } = require('../models/pedidoModel');
 
 // Ruta para crear un nuevo pedido
 router.post('/', async (req, res) => {
@@ -51,6 +51,17 @@ router.get('/:id', async (req, res) => {
     } catch (error) {
         console.error('Error al obtener el pedido:', error);
         res.status(500).json({ message: 'Error interno del servidor.' });
+    }
+});
+
+
+router.get('/top/pedidos', async (req, res) => {
+    try {
+        const pedidos = await pedidosTotal();
+        res.status(200).json(pedidos);
+    } catch (error) {
+        console.error('Error al obtener los pedidos:', error);
+        res.status(500).json({ message: 'Error al obtener los pedidos.' });
     }
 });
 

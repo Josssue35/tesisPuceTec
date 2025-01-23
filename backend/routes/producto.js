@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
     getAllProducts,
-    reduceProductQuantity // Importa la función para reducir la cantidad
+    reduceProductQuantity, createProducto // Importa la función para reducir la cantidad
 } = require('../models/productoModel'); // Asegúrate de que la ruta sea correcta
 
 // Ruta para obtener todos los productos
@@ -27,6 +27,19 @@ router.post('/reduce-stock', async (req, res) => {
     } catch (error) {
         console.log('Error al reducir la cantidad:', error);
         res.status(500).json({ message: error.message }); // Manejo de errores
+    }
+});
+
+
+router.post('/crear-producto', async (req, res) => {
+    const { nombre, descripcion, precio, cantidad_disponible, categoria_id } = req.body;
+
+    try {
+        const newProduct = await createProducto(nombre, descripcion, precio, cantidad_disponible, categoria_id); ca
+        res.status(201).json(newProduct);
+    } catch (error) {
+        console.log('Error al crear el producto:', error);
+        res.status(500).json({ message: error.message });
     }
 });
 

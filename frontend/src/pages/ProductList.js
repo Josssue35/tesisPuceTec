@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import SelectedProducts from './SelectedProducts';
-import AdminSideMenu from './SideMenuAdmin';
+import SelectedProducts from '../components/SelectedProducts';
+import AdminSideMenu from '../components/SideMenuAdmin';
 import '../styles/ProductList.css';
 
 const ProductList = () => {
@@ -75,7 +75,7 @@ const ProductList = () => {
                         Bebidas
                     </button>
                 </div>
-
+                {/* Categorias */}
                 <div className="category-container">
                     {currentSection === 'menu' && (
                         <>

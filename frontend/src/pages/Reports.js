@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Row, Col, Pagination, Modal, Table } from "react-bootstrap";
-import AdminSideMenu from "./SideMenuAdmin";
+import AdminSideMenu from "../components/SideMenuAdmin";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement } from 'chart.js';
 import { Bar, Line } from "react-chartjs-2";
 import * as XLSX from "xlsx";
