@@ -1,11 +1,9 @@
-/* Reset básico */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Configuración de html y body */
 html,
 body {
     margin: 0;
@@ -13,32 +11,19 @@ body {
     height: 100%;
     width: 100%;
     overflow: hidden;
-    /* Evita scrolls no deseados */
 }
 
-/* Contenedor principal */
 .homepage-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    /* Asegura que ocupe todo el alto */
     width: 100vw;
-    /* Asegura que ocupe todo el ancho */
     background: linear-gradient(135deg, #1e3a5f, #1b6ca8);
-    /* Fondo degradado */
     color: #fff;
     font-family: 'Arial', sans-serif;
     text-align: center;
-}
-
-/* Solución adicional para estilos heredados o frameworks */
-body {
-    margin: 0;
-    /* Elimina márgenes del body */
-    padding: 0;
-    /* Elimina padding del body */
 }
 
 /* Título */
@@ -49,19 +34,16 @@ body {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Contenedor de las cards */
 .section-links {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    /* 3 columnas de igual tamaño */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* Ajusta el ancho mínimo y máximo */
     gap: 20px;
-    /* Espacio entre las cards */
     width: 100%;
     max-width: 1200px;
-    /* Ancho máximo del contenedor */
     padding: 20px;
-    overflow-y: auto;
-    /* Permite scroll vertical si es necesario */
+    justify-content: center;
+    /* Centra las tarjetas */
 }
 
 /* Estilos de las cards */
@@ -70,13 +52,19 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 3rem;
+    padding: 2rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-decoration: none;
     color: #fff;
     transition: transform 0.3s ease, background 0.3s ease;
+    max-width: 300px;
+    /* Ancho máximo de las tarjetas */
+    width: 100%;
+    /* Asegura que no excedan el ancho máximo */
+    margin: 0 auto;
+    /* Centra las tarjetas en su contenedor */
 }
 
 .section-card:hover {
@@ -145,37 +133,37 @@ body {
     font-size: 1.2rem;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .homepage-title {
         font-size: 2rem;
-        /* Tamaño más pequeño para móviles */
     }
 
     .section-links {
-        grid-template-columns: repeat(2, 1fr);
-        /* 2 columnas en móviles */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        /* Ajuste para tablets */
     }
 
     .section-card {
-        padding: 2rem;
-        /* Menos espacio interno en móviles */
+        padding: 1.5rem;
     }
 
     .section-icon {
         font-size: 3rem;
-        /* Íconos más pequeños en móviles */
     }
 
     .section-text {
         font-size: 1.2rem;
-        /* Texto más pequeño en móviles */
     }
 }
 
 @media (max-width: 480px) {
     .section-links {
         grid-template-columns: 1fr;
-        /* 1 columna en pantallas muy pequeñas */
+        /* Una sola columna en móviles */
+    }
+
+    .section-card {
+        max-width: 100%;
+        /* Ocupa el ancho completo en móviles */
     }
 }

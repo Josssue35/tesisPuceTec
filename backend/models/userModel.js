@@ -29,7 +29,7 @@ async function findUser(cedula, password) {
 
     try {
         const result = await pool.query(
-            'SELECT id, cedula, password, role, full_name FROM usuarios WHERE cedula = $1',
+            'SELECT id, cedula, password, role, full_name, active FROM usuarios WHERE cedula = $1',
             [cedula]
         );
 
@@ -41,7 +41,8 @@ async function findUser(cedula, password) {
                     id: user.id,
                     cedula: user.cedula,
                     role: user.role,
-                    fullname: user.full_name
+                    fullname: user.full_name,
+                    active: user.active
                 };
             }
         }

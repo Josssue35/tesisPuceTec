@@ -29,14 +29,13 @@ const HomePage = () => {
                     <span className="section-text">Menú</span>
                 </Link>
 
-                <Link to="/reports" className="section-card">
-                    <i className="bi bi-bar-chart-fill section-icon"></i>
-                    <span className="section-text">Reportería</span>
-                </Link>
-
                 {isAdmin && (
                     <>
-                        <Link to="/inventories" className="section-card">
+                        <Link to="/reports" className="section-card">
+                            <i className="bi bi-bar-chart-fill section-icon"></i>
+                            <span className="section-text">Reportería</span>
+                        </Link>
+                        <Link to="/inventarios" className="section-card">
                             <i className="bi bi-boxes section-icon"></i>
                             <span className="section-text">Inventarios</span>
                         </Link>

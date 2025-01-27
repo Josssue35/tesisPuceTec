@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Row, Col, Pagination, Modal, Table } from "react-bootstrap";
+import { Button, Form, Row, Col, Modal, Table, Card } from "react-bootstrap";
 import AdminSideMenu from "../components/SideMenuAdmin";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement } from 'chart.js';
 import { Bar, Line } from "react-chartjs-2";
@@ -191,18 +191,6 @@ const Reports = () => {
     const topMonth = Object.keys(salesByMonth).reduce((a, b) =>
         salesByMonth[a] > salesByMonth[b] ? a : b, "");
 
-    const sales = {
-        labels: [topMonth],
-        datasets: [
-            {
-                label: 'Ventas en el mes',
-                data: [salesByMonth[topMonth]],
-                backgroundColor: "#41cb30",
-                borderColor: "#388E3C",
-                borderWidth: 1,
-            },
-        ],
-    };
 
     const barData = {
         labels: Object.keys(salesBySeller),
@@ -234,165 +222,211 @@ const Reports = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage);
 
-    // Calcular total de páginas
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
+
+    // Cambiar de página
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const Pagination = () => {
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+        return (
+            <nav>
+                <ul className="pagination justify-content-center">
+                    {/* Botón Atrás */}
+                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                        <button
+                            onClick={() => paginate(currentPage - 1)}
+                            className="page-link"
+                            disabled={currentPage === 1}
+                        >
+                            Atrás
+                        </button>
+                    </li>
+
+                    {/* Página Actual */}
+                    <li className="page-item active">
+                        <span className="page-link">
+                            Página {currentPage} de {totalPages}
+                        </span>
+                    </li>
+
+                    {/* Botón Siguiente */}
+                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                        <button
+                            onClick={() => paginate(currentPage + 1)}
+                            className="page-link"
+                            disabled={currentPage === totalPages}
+                        >
+                            Siguiente
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        );
     };
-
     return (
-        <div className="container-fluid">
-            <div className="row">
-                {/* Sidebar */}
-                <div className="col-lg-2 col-md-3">
-                    <AdminSideMenu />
-                </div>
+        <div className="report-layout">
+            <div className="report-sidebar">
+                <AdminSideMenu />
+            </div>
 
-                {/* Contenido principal y gráficas */}
-                <div className="col-lg-10 col-md-9" style={{ marginLeft: "250px" }}>
-                    <div className="row">
-                        {/* Contenido principal (tabla y filtros) */}
-                        <div className="col-lg-9 col-md-8 report-container">
-                            <h1 className="text-center my-4">Reportería</h1>
-
-                            {/* Filters Section */}
-                            <div className="filters mb-4">
-                                <Row>
-                                    {[
-                                        { label: 'Fecha Inicio', name: 'startDate', type: 'date', value: filters.startDate },
-                                        { label: 'Fecha Fin', name: 'endDate', type: 'date', value: filters.endDate },
-                                        { label: 'Mínimo Total', name: 'minTotal', type: 'number', value: filters.minTotal },
-                                        { label: 'Máximo Total', name: 'maxTotal', type: 'number', value: filters.maxTotal },
-                                        { label: 'Vendedor', name: 'sellerName', type: 'text', value: filters.sellerName },
-                                        { label: 'ID Orden', name: 'orderId', type: 'text', value: filters.orderId },
-                                    ].map((filter, index) => (
-                                        <Col key={index} md={2}>
-                                            <Form.Group>
-                                                <Form.Label>{filter.label}</Form.Label>
-                                                <Form.Control
-                                                    type={filter.type}
-                                                    name={filter.name}
-                                                    value={filter.value}
-                                                    onChange={handleFilterChange}
-                                                />
-                                            </Form.Group>
-                                        </Col>
-                                    ))}
+            <div className="report-main">
+                <div className="report-content">
+                    <div className="left-report">
+                        <Card className="mb-4">
+                            <Card.Body>
+                                <Row className="align-items-center">
+                                    <Col>
+                                        <h1 className="staff-title text-center my-4 text-primary fs-2 fw-bold">Reporteria</h1>
+                                    </Col>
                                 </Row>
-                                <div className="text-center mt-3">
-                                    <Button variant="primary" onClick={applyFilters} className="mx-2">
-                                        Aplicar Filtros
-                                    </Button>
-                                    <Button variant="success" onClick={handleExportExcel} className="mx-2">
-                                        Exportar a Excel
-                                    </Button>
-                                </div>
-                            </div>
+                            </Card.Body>
+                        </Card>
 
-                            {/* Data Table */}
-                            <div className="table-responsive">
-                                <table className="table table-hover table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Número de Orden</th>
-                                            <th>Vendedor</th>
-                                            <th>Total Compra</th>
-                                            <th>Fecha Compra</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {currentData.map((row) => (
-                                            <tr key={row.id}>
-                                                <td>{row.id}</td>
-                                                <td>{row.usuario}</td>
-                                                <td>{row.total_compra}</td>
-                                                <td>{format(new Date(row.fecha), "dd/MM/yyyy HH:mm:ss")}</td>
-                                                <td>
-                                                    <Button
-                                                        className="btn btn-custom-info"
-                                                        onClick={() => handleOpenModal(row.id)}
-                                                    >
-                                                        Ver Detalles
-                                                    </Button>
-                                                </td>
-                                            </tr>
+                        <Card>
+                            <Card.Body>
+                                {/* Filters Section */}
+                                <div className="filters mb-4">
+                                    <Row>
+                                        {[
+                                            { label: 'Fecha Inicio', name: 'startDate', type: 'date', value: filters.startDate },
+                                            { label: 'Fecha Fin', name: 'endDate', type: 'date', value: filters.endDate },
+                                            { label: 'Mínimo Total', name: 'minTotal', type: 'number', value: filters.minTotal },
+                                            { label: 'Máximo Total', name: 'maxTotal', type: 'number', value: filters.maxTotal },
+                                            { label: 'Vendedor', name: 'sellerName', type: 'text', value: filters.sellerName },
+                                            { label: 'ID Orden', name: 'orderId', type: 'text', value: filters.orderId },
+                                        ].map((filter, index) => (
+                                            <Col key={index} md={2}>
+                                                <Form.Group>
+                                                    <Form.Label>{filter.label}</Form.Label>
+                                                    <Form.Control
+                                                        type={filter.type}
+                                                        name={filter.name}
+                                                        value={filter.value}
+                                                        onChange={handleFilterChange}
+                                                    />
+                                                </Form.Group>
+                                            </Col>
                                         ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                    </Row>
+                                    <div className="text-center mt-3">
+                                        <Button variant="primary" onClick={applyFilters} className="mx-2">
+                                            Aplicar Filtros
+                                        </Button>
+                                        <Button variant="success" onClick={handleExportExcel} className="mx-2">
+                                            Exportar a Excel
+                                        </Button>
+                                    </div>
+                                </div>
+                            </Card.Body>
+                        </Card>
 
-                            {/* Pagination */}
-                            <Pagination className="justify-content-center">
-                                {[...Array(totalPages).keys()].map((page) => (
-                                    <Pagination.Item
-                                        key={page}
-                                        active={page + 1 === currentPage}
-                                        onClick={() => handlePageChange(page + 1)}
-                                    >
-                                        {page + 1}
-                                    </Pagination.Item>
-                                ))}
-                            </Pagination>
-
-                            {/* Modal */}
-                            <Modal show={showModal} onHide={handleCloseModal} centered>
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Detalles del Pedido #{selectedOrderId}</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    {orderDetails.length > 0 ? (
-                                        <Table striped bordered>
-                                            <thead>
-                                                <tr>
-                                                    <th>Producto</th>
-                                                    <th>Cantidad</th>
-                                                    <th>Precio</th>
+                        <Card>
+                            <Card.Body>
+                                <div className="table-responsive">
+                                    <table className="table table-hover table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Número de Orden</th>
+                                                <th>Vendedor</th>
+                                                <th>Total Compra</th>
+                                                <th>Fecha Compra</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {currentData.map((row) => (
+                                                <tr key={row.id}>
+                                                    <td>{row.id}</td>
+                                                    <td>{row.usuario}</td>
+                                                    <td>{row.total_compra}</td>
+                                                    <td>{format(new Date(row.fecha), "dd/MM/yyyy HH:mm:ss")}</td>
+                                                    <td>
+                                                        <Button
+                                                            className="btn btn-custom-info"
+                                                            onClick={() => handleOpenModal(row.id)}
+                                                        >
+                                                            Ver Detalles
+                                                        </Button>
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                {orderDetails.map((detail) => (
-                                                    <tr key={detail.detalle_id}>
-                                                        <td>{detail.producto_nombre}</td>
-                                                        <td>{detail.cantidad}</td>
-                                                        <td>${detail.precio}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </Table>
-                                    ) : (
-                                        <p>No se encontraron detalles para este pedido.</p>
-                                    )}
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    <Button variant="secondary" onClick={handleCloseModal}>
-                                        Cerrar
-                                    </Button>
-                                </Modal.Footer>
-                            </Modal>
-                        </div>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </Card.Body>
+                        </Card>
 
-                        {/* Gráficas */}
-                        <div className="col-lg-3 col-md-4 chart-container" style={{ borderLeft: "2px solid #f9f9f9" }}>
-                            <div className="mb-4">
-                                <h3 className="text-center">Ventas Totales: ${totalSales.toFixed(2)}</h3>
-                                <Line data={lineData} />
-                            </div>
-                            <div>
-                                <h3 className="text-center">Mayor Vendedor: {topSeller}</h3>
-                                <Bar data={barData} />
-                            </div>
-                            <div>
-                                <h3 className="text-center">Mes más vendido: {topMonth}</h3>
-                                <h3 className="text-center">${salesByMonth[topMonth]}</h3>
-                                <Bar data={sales} />
-                            </div>
-                        </div>
+                        {/* Pagination */}
+                        <Pagination />
+
+                        {/* Modal */}
+                        <Modal show={showModal} onHide={handleCloseModal} centered>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Detalles del Pedido #{selectedOrderId}</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                {orderDetails.length > 0 ? (
+                                    <Table striped bordered>
+                                        <thead>
+                                            <tr>
+                                                <th>Producto</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {orderDetails.map((detail) => (
+                                                <tr key={detail.detalle_id}>
+                                                    <td>{detail.producto_nombre}</td>
+                                                    <td>{detail.cantidad}</td>
+                                                    <td>${detail.precio}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </Table>
+                                ) : (
+                                    <p>No se encontraron detalles para este pedido.</p>
+                                )}
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleCloseModal}>
+                                    Cerrar
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+                    </div>
+
+                    {/* Gráficas */}
+                    <div className="grafics-content">
+                        <Card>
+                            <Card.Body>
+
+                                <div className="mb-4">
+                                    <h3 className="text-center">Ventas Totales: ${totalSales.toFixed(2)}</h3>
+                                    <Line data={lineData} />
+                                </div>
+                                <div>
+                                    <h3 className="text-center">Mayor Vendedor: {topSeller}</h3>
+                                    <Bar data={barData} />
+                                </div>
+                                <div className="best-month-section text-center p-4 bg-light rounded">
+                                    <h3 className="text-primary mb-3">
+                                        <i className="bi bi-calendar-check me-2"></i> {/* Ícono de calendario */}
+                                        Mes más vendido: <strong>{topMonth}</strong>
+                                    </h3>
+                                    <h2 className="text-success display-6">
+                                        Total: <strong>${salesByMonth[topMonth]}</strong>
+                                    </h2>
+                                </div>
+                            </Card.Body>
+
+                        </Card>
+
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

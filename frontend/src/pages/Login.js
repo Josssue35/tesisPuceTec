@@ -18,15 +18,23 @@ const Login = () => {
                 body: JSON.stringify({ cedula, password }),
             });
             const userData = await response.json();
-            console.log(userData);
-            if (response.status === 200) {
-                console.log('Login successful:', userData);
-                localStorage.setItem('userId', userData.id);
-                localStorage.setItem('cedula', userData.cedula);
-                localStorage.setItem('userRole', userData.role);
-                localStorage.setItem('fullname', userData.fullname);
 
-                navigate('/homepage');
+            if (response.status === 200) {
+                if (userData.active) {
+                    localStorage.setItem('userId', userData.id);
+                    localStorage.setItem('cedula', userData.cedula);
+                    localStorage.setItem('userRole', userData.role);
+                    localStorage.setItem('fullname', userData.fullname);
+                    localStorage.setItem('active', userData.active);
+
+                    navigate('/homepage');
+                } else {
+                    toast.error('Tu cuenta no está activa. Por favor, contacta al administrador.', {
+                        position: 'top-right',
+                        autoClose: 3000,
+                        className: 'custom-toast-error',
+                    });
+                }
             } else {
                 toast.error('Nombre de usuario o contraseña incorrectos.', {
                     position: 'top-right',
@@ -41,7 +49,6 @@ const Login = () => {
 
     return (
         <div className="auth-container">
-            {/* Columna izquierda: Formulario de inicio de sesión */}
             <div className="form-container-modern">
                 <h1>Iniciar Sesión</h1>
                 <p>Bienvenido, por favor ingresa tus credenciales</p>
@@ -79,7 +86,6 @@ const Login = () => {
                 </form>
             </div>
 
-            {/* Columna derecha: Video en loop */}
             <div className="video-container">
                 <video
                     autoPlay

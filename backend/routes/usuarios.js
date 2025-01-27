@@ -32,6 +32,7 @@ router.post('/login', async (req, res) => {
                 cedula: user.cedula,
                 role: user.role,
                 fullname: user.fullname,
+                active: user.active
             });
         } else {
             res.status(401).json({ message: 'Credenciales inválidas' });

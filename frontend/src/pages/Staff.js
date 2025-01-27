@@ -7,8 +7,6 @@ import axios from 'axios';
 const Staff = () => {
     const [employees, setEmployees] = useState([]);
     const [filteredEmployees, setFilteredEmployees] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [newEmployee, setNewEmployee] = useState({
@@ -29,22 +27,18 @@ const Staff = () => {
     const employeesPerPage = 10;
 
 
-    // Función para obtener los datos de la API
     const fetchEmployees = async () => {
         try {
             const response = await axios.get('/api/usuarios/personal');
             setEmployees(response.data);
             setFilteredEmployees(response.data);
         } catch (error) {
-            if (error.response) {
-                setError(`Error ${error.response.status}: ${error.response.data.message || 'Error al obtener los datos'}`);
-            } else if (error.request) {
-                setError('No se pudo conectar con el servidor');
-            } else {
-                setError(`Error: ${error.message}`);
-            }
-        } finally {
-            setLoading(false);
+            console.error('Error al obtener los empleados:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudieron cargar los empleados. Inténtalo de nuevo más tarde.',
+            });
         }
     };
     const applyFilters = useCallback(() => {
@@ -105,7 +99,7 @@ const Staff = () => {
 
             // Mostrar mensaje de éxito
             Swal.fire('¡Actualizado!', 'El usuario ha sido actualizado exitosamente.', 'success');
-
+            await logAction('Personal', 'Editar Usuario', `Se editó el usuario ${selectedEmployee.full_name}`, localStorage.getItem('userId'));
             // Actualizar la lista de empleados y cerrar el modal
             fetchEmployees();
             handleCloseModal();
@@ -123,9 +117,16 @@ const Staff = () => {
 
     // Función para manejar la eliminación de un usuario
     const handleDelete = (userId) => {
+        const employee = employees.find(emp => emp.id === userId);
+
+        if (!employee) {
+            Swal.fire('Error', 'No se encontró el empleado.', 'error');
+            return;
+        }
+
         Swal.fire({
             title: '¿Estás seguro?',
-            text: '¡No podrás revertir esto!',
+            text: `¡No podrás revertir la eliminación de ${employee.full_name}!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -134,19 +135,19 @@ const Staff = () => {
             cancelButtonText: 'Cancelar',
         }).then((result) => {
             if (result.isConfirmed) {
-                deleteUser(userId);
+                deleteUser(userId, employee.full_name);
             }
         });
     };
 
-    const deleteUser = async (userId) => {
+    const deleteUser = async (userId, fullName) => {
         try {
             await axios.delete(`api/usuarios/personal/${userId}`);
 
-            // Mostrar mensaje de éxito
-            Swal.fire('¡Eliminado!', 'El usuario ha sido eliminado.', 'success');
+            Swal.fire('¡Eliminado!', `El usuario ${fullName} ha sido eliminado.`, 'success');
 
-            // Actualizar la lista de empleados
+            await logAction('Personal', 'Eliminar Usuario', `Se eliminó el usuario ${fullName} (ID: ${userId})`, localStorage.getItem('userId'));
+
             fetchEmployees();
         } catch (error) {
             // Manejar errores
@@ -158,7 +159,7 @@ const Staff = () => {
                 Swal.fire('Error', `Error: ${error.message}`, 'error');
             }
         }
-    }
+    };
     // Función para manejar el cambio en los campos del formulario de creación
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -188,7 +189,7 @@ const Staff = () => {
 
             // Mostrar mensaje de éxito
             Swal.fire('¡Creado!', 'El usuario ha sido creado exitosamente.', 'success');
-
+            await logAction('Personal', 'Crear Usuario', `Se creó el usuario ${full_name}`, localStorage.getItem('userId'));
             // Actualizar la lista de empleados y limpiar el formulario
             fetchEmployees();
             setNewEmployee({ cedula: '', password: '', full_name: '', role: 'user' });
@@ -217,15 +218,7 @@ const Staff = () => {
         fetchEmployees();
     }, []);
 
-    // Mostrar un mensaje de carga
-    if (loading) {
-        return <div className="loading">Cargando...</div>;
-    }
 
-    // Mostrar un mensaje de error
-    if (error) {
-        return <div className="error">Error: {error}</div>;
-    }
 
     //  Cálculo de paginación
     const totalPages = Math.ceil(filteredEmployees.length / employeesPerPage);
@@ -233,24 +226,26 @@ const Staff = () => {
     const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
     const currentEmployees = filteredEmployees.slice(indexOfFirstEmployee, indexOfLastEmployee);
 
-    // Funciones de página anterior y siguiente
-    const handlePreviousPage = () => {
-        if (currentPage > 1) {
-            setCurrentPage((prev) => prev - 1);
-        }
-    };
-    const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            setCurrentPage((prev) => prev + 1);
-        }
-    };
+
     function limitCharacters(input, maxLength) {
         if (input.length > maxLength) {
             return input.slice(0, maxLength);
         }
         return input;
     }
-
+    // Bitacora acciones personal
+    const logAction = async (modulo, accion, detalle, usuario_id) => {
+        try {
+            await axios.post('/api/bitacora/crear-bitacora', {
+                modulo,
+                accion,
+                detalle,
+                usuario_id
+            });
+        } catch (error) {
+            console.error('Error al enviar la bitácora:', error);
+        }
+    };
     return (
         <div className="staff-page">
             {/* Sidebar */}

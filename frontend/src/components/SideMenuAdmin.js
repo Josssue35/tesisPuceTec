@@ -51,16 +51,17 @@ const AdminSideMenu = () => {
                             <i className="bi bi-journal-text"></i>
                             <span>Bitácora</span>
                         </Link>
+                        <Link to="/reports" className="menu-item">
+                            <i className="bi bi-bar-chart-fill"></i>
+                            <span>Reportería</span>
+                        </Link>
                     </>
                 )}
                 <Link to="/products" className="menu-item">
                     <i className="bi bi-basket-fill"></i>
                     <span>Menú</span>
                 </Link>
-                <Link to="/reports" className="menu-item">
-                    <i className="bi bi-bar-chart-fill"></i>
-                    <span>Reportería</span>
-                </Link>
+
             </nav>
 
             {/* Footer con el nombre del usuario y botón de cerrar sesión */}
