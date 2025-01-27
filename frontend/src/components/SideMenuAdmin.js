@@ -39,7 +39,7 @@ const AdminSideMenu = () => {
             <nav className="menu-options">
                 {isAdmin && (
                     <>
-                        <Link to="/inventories" className="menu-item">
+                        <Link to="/inventarios" className="menu-item">
                             <i className="bi bi-boxes"></i>
                             <span>Inventarios</span>
                         </Link>
@@ -47,9 +47,13 @@ const AdminSideMenu = () => {
                             <i className="bi bi-people-fill"></i>
                             <span>Personal</span>
                         </Link>
-                        <Link to="/log" className="menu-item">
+                        <Link to="/bitacora" className="menu-item">
                             <i className="bi bi-journal-text"></i>
                             <span>Bitácora</span>
+                        </Link>
+                        <Link to="/reports" className="menu-item">
+                            <i className="bi bi-bar-chart-fill"></i>
+                            <span>Reportería</span>
                         </Link>
                     </>
                 )}
@@ -57,10 +61,7 @@ const AdminSideMenu = () => {
                     <i className="bi bi-basket-fill"></i>
                     <span>Menú</span>
                 </Link>
-                <Link to="/reports" className="menu-item">
-                    <i className="bi bi-bar-chart-fill"></i>
-                    <span>Reportería</span>
-                </Link>
+
             </nav>
 
             {/* Footer con el nombre del usuario y botón de cerrar sesión */}

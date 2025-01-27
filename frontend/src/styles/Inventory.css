@@ -1,0 +1,42 @@
+/* Reseteo global */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* Layout general */
+.inventory-layout {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+/* Sidebar */
+.inventory-sidebar {
+    width: 250px;
+    background-color: #f4f4f4;
+    height: 100vh;
+    flex-shrink: 0;
+}
+
+.inventory-main {
+    display: flex;
+    flex-direction: column;
+    width: calc(100vw - 250px);
+    height: 100%;
+}
+
+/* Contenedor del contenido */
+.inventory-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    height: 100%;
+}

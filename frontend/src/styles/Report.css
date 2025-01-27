@@ -1,10 +1,78 @@
-.report-container {
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    /* Evita el scroll en toda la página */
+}
+
+.report-layout {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.report-sidebar {
+    width: 250px;
+    /* Ancho fijo para el menú lateral */
+    background-color: #f4f4f4;
+    height: 100vh;
+    flex-shrink: 0;
+    /* Evita que el menú lateral se encoja */
+}
+
+.report-main {
+    flex-grow: 1;
+    /* Ocupa el espacio restante */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Evita el desbordamiento del contenedor principal */
+}
+
+.report-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.left-report {
+    flex: 8;
+    width: 100%;
+    height: 100%;
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 100%;
-    margin: 0 auto;
+    /* Espaciado interno */
+    /* Permite el scroll vertical si el contenido es muy largo */
+}
+
+.grafics-content {
+    flex: 2;
+    padding: 20px;
+    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+
+}
+
+.grafics-content .card {
+    height: 100%;
+    /* El Card ocupa todo el alto de su contenedor */
+    display: flex;
+    flex-direction: column;
+}
+
+.grafics-content .card-body {
+    flex: 1;
+    /* El cuerpo del Card ocupa todo el espacio restante */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Distribuye el espacio entre los elementos */
 }
 
 .filters {
@@ -15,21 +83,6 @@
     margin-bottom: 20px;
 }
 
-.chart-container {
-
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.chart-container h3 {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
 .table {
     background-color: #ffffff;
     border-radius: 8px;
@@ -38,25 +91,34 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-
-
 .btn-custom-info {
     background-color: #1e3a5f !important;
-    border-color: #1E3A5F !important;
+    border-color: #1e3a5f !important;
     color: white !important;
 }
 
 .btn-custom-info:hover {
-    background-color: #16283D !important;
-    border-color: #16283D !important;
+    background-color: #16283d !important;
+    border-color: #16283d !important;
+}
+
+
+.grafics-content h3 {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
 }
 
 @media (max-width: 768px) {
-    .report-container {
-        max-width: 100%;
+    .report-content {
+        flex-direction: column;
+        /* Cambia a disposición vertical en pantallas pequeñas */
     }
 
-    .chart-container {
-        margin-top: 20px;
+    .left-report,
+    .grafics-content {
+        width: 100%;
+        /* Ocupa todo el ancho en pantallas pequeñas */
     }
 }

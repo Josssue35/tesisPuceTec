@@ -1,9 +1,8 @@
 const pool = require('../config/database.js');
 
 const fechaEcuador = new Date();
-fechaEcuador.setHours(fechaEcuador.getHours() - 5); // Ajustar a UTC-5 (zona horaria de Ecuador)
+fechaEcuador.setHours(fechaEcuador.getHours() - 5);
 
-console.log(fechaEcuador); // Te da la fecha con la zona horaria de Ecuador
 
 
 
@@ -107,7 +106,37 @@ async function obtenerPedidosTotal() {
     }
 }
 
+async function pedidosTotal() {
+    const client = await pool.connect();
+    try {
+        const result = await client.query(`
+            SELECT 
+                p.id AS pedido_id,
+                dp.id AS detalle_id,
+                pr.nombre AS producto_nombre,
+                dp.cantidad,
+                dp.precio,
+                pr.descripcion AS producto_descripcion,
+                pr.categoria_id,
+                c.nombre AS categoria_nombre,
+                p.fecha AT TIME ZONE 'UTC' AT TIME ZONE 'America/Guayaquil' AS fecha_pedido
+            FROM pedidos p
+            JOIN detalle_pedido dp ON p.id = dp.pedido_id
+            JOIN productos pr ON dp.producto_id = pr.id
+            JOIN categorias c ON pr.categoria_id = c.id
+            ORDER BY p.fecha DESC
+        `);
+        console.log(result.rows);
+        return result.rows;
+    } catch (error) {
+        console.error('Error al obtener los pedidos:', error);
+        throw new Error('Error al obtener los pedidos');
+    } finally {
+        client.release();
+    }
+
+}
 
 
 
-module.exports = { createPedido, obtenerPedidoPorId, obtenerPedidosTotal };
+module.exports = { createPedido, obtenerPedidoPorId, obtenerPedidosTotal, pedidosTotal };
