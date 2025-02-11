@@ -1,0 +1,169 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.homepage-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(135deg, #1e3a5f, #1b6ca8);
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+}
+
+/* Título */
+.homepage-title {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.section-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* Ajusta el ancho mínimo y máximo */
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    justify-content: center;
+    /* Centra las tarjetas */
+}
+
+/* Estilos de las cards */
+.section-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: #fff;
+    transition: transform 0.3s ease, background 0.3s ease;
+    max-width: 300px;
+    /* Ancho máximo de las tarjetas */
+    width: 100%;
+    /* Asegura que no excedan el ancho máximo */
+    margin: 0 auto;
+    /* Centra las tarjetas en su contenedor */
+}
+
+.section-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.section-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Contenedor para el usuario y cerrar sesión */
+.user-logout-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Información del usuario */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.user-info i {
+    font-size: 1.2rem;
+}
+
+/* Botón de cerrar sesión */
+.logout-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+.logout-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.logout-button i {
+    font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+    .homepage-title {
+        font-size: 2rem;
+    }
+
+    .section-links {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        /* Ajuste para tablets */
+    }
+
+    .section-card {
+        padding: 1.5rem;
+    }
+
+    .section-icon {
+        font-size: 3rem;
+    }
+
+    .section-text {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-links {
+        grid-template-columns: 1fr;
+        /* Una sola columna en móviles */
+    }
+
+    .section-card {
+        max-width: 100%;
+        /* Ocupa el ancho completo en móviles */
+    }
+}
