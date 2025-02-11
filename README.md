@@ -17,8 +17,8 @@ El sistema fue desarrollado con:
 
 ## 📂 Documentación
 
-- 📘 [Manual de Usuario](./docs/manual_usuario.md)
-- 🛠️ [Guía para Desarrolladores](./docs/desarrolladores.md)
+- 📘 [Manual de Usuario](./docs/manual_usuario.pdf)
+- 🛠️ [Guía para Desarrolladores](./docs/desarrolladores.pdf)
 
 ## 👨‍💻 Desarrolladores
 
