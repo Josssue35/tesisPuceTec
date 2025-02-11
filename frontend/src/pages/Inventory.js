@@ -6,6 +6,8 @@ import '../styles/Inventory.css';
 import { Modal, Button, Form, Row, Col, Card } from 'react-bootstrap';
 import { FaSearch } from "react-icons/fa";
 import axios from 'axios';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const Inventory = () => {
     const [section, setSection] = useState('productos');
@@ -88,7 +90,7 @@ const Inventory = () => {
         }
 
         setFilteredProducts(filtered);
-        setCurrentPage(1); // Reiniciar a la primera página al aplicar filtros
+        setCurrentPage(1);
     }, [products, filters]);
 
     useEffect(() => {
@@ -106,7 +108,6 @@ const Inventory = () => {
     const categoryMap = {
         1: "Menú",
         2: "Bebidas",
-        // Agrega más categorías si es necesario
     };
 
     const formatDate = (dateString) => {
@@ -118,7 +119,7 @@ const Inventory = () => {
             hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
-            hour12: false, // Usar formato de 24 horas
+            hour12: false,
         });
     };
 
@@ -309,7 +310,6 @@ const Inventory = () => {
                 nombre, descripcion, precio, cantidad_disponible, categoria_id
             });
 
-            // Mostrar mensaje de éxito
             Swal.fire('¡Creado!', 'El producto ha sido creado exitosamente.', 'success');
 
             await logAction('Productos', 'Crear', `Creación del producto ${nombre}`, localStorage.getItem('userId'));
@@ -317,7 +317,6 @@ const Inventory = () => {
             setNewProduct({ nombre: '', descripcion: '', precio: '', cantidad_disponible: '', categoria_id: '' });
             setShowModal(false);
         } catch (error) {
-            // Manejar errores
             if (error.response) {
                 Swal.fire('Error', `Error ${error.response.status}: ${error.response.data.message || 'No se pudo crear el usuario.'}`, 'error');
             } else if (error.request) {
@@ -417,16 +416,13 @@ const Inventory = () => {
         try {
             await axios.delete(`api/producto/eliminar-producto/${userId}`);
 
-            // Mostrar mensaje de éxito
             Swal.fire('¡Eliminado!', `El producto "${productName}" ha sido eliminado.`, 'success');
 
-            // Registrar la acción en la bitácora
             await logAction('Inventario', 'Eliminar Producto', `Se eliminó el producto "${productName}"`, localStorage.getItem('userId')); // Cambia el 3 por el ID del usuario que realiza la acción
 
             // Actualizar la lista de productos
             fetchProducts();
         } catch (error) {
-            // Manejar errores
             if (error.response) {
                 Swal.fire('Error', `Error ${error.response.status}: ${error.response.data.message || 'No se pudo eliminar el producto.'}`, 'error');
             } else if (error.request) {
@@ -450,6 +446,42 @@ const Inventory = () => {
             console.error('Error al enviar la bitácora:', error);
         }
     };
+    const exportToExcel = () => {
+        if (filteredProducts.length === 0) {
+            Swal.fire('Aviso', 'No hay datos para exportar.', 'info');
+            return;
+        }
+
+        const headers = [
+            "Producto",
+            "Categoría",
+            "Precio ($)",
+            "Stock Disponible",
+            "Sección",
+            "Fecha de Creación"
+        ];
+
+        const dataToExport = filteredProducts.map(product => [
+            product.nombre,
+            product.descripcion,
+            `$${parseFloat(product.precio).toFixed(2)}`,
+            product.cantidad_disponible,
+            categoryMap[product.categoria_id] || "Categoría no definida",
+            formatDate(product.fecha_creacion)
+        ]);
+
+        const ws = XLSX.utils.aoa_to_sheet([headers, ...dataToExport]);
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Productos");
+
+        const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const data = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+        saveAs(data, "Inventario.xlsx");
+
+        Swal.fire('Éxito', 'Archivo Excel generado correctamente.', 'success');
+    };
     return (
         <div className="inventory-layout">
             {/* Contenedor principal */}
@@ -468,8 +500,11 @@ const Inventory = () => {
                                             <h1 className="staff-title text-center my-4 text-primary fs-2 fw-bold">Productos Pollos A La Brasa Del Valle</h1>
                                         </Col>
                                         <Col className="text-end">
-                                            <Button variant="primary" onClick={() => setShowModal(true)}>
+                                            <Button variant="primary" className='me-1' onClick={() => setShowModal(true)}>
                                                 Crear Producto
+                                            </Button>
+                                            <Button variant="success" onClick={exportToExcel}>
+                                                Exportar Excel
                                             </Button>
                                         </Col>
                                     </Row>

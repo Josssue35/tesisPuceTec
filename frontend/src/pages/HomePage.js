@@ -43,7 +43,7 @@ const HomePage = () => {
                             <i className="bi bi-people-fill section-icon"></i>
                             <span className="section-text">Personal</span>
                         </Link>
-                        <Link to="/log" className="section-card">
+                        <Link to="/bitacora" className="section-card">
                             <i className="bi bi-journal-text section-icon"></i>
                             <span className="section-text">Bitácora</span>
                         </Link>

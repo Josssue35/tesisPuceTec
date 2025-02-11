@@ -3,21 +3,36 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/AuthStyles.css';
-
+import axios from 'axios';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importar íconos de ojito
+import logo from '../resources/logoDelValle.png';
 const Login = () => {
     const [cedula, setCedula] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        try {
-            const response = await fetch('http://localhost:3000/api/usuarios/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ cedula, password }),
+        if (!cedula || !password) {
+            toast.error('Por favor, completa todos los campos.', {
+                position: 'top-right',
+                autoClose: 3000,
+                className: 'custom-toast-error',
             });
-            const userData = await response.json();
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await axios.post('/api/usuarios/login', {
+                cedula,
+                password,
+            });
+
+            const userData = response.data;
 
             if (response.status === 200) {
                 if (userData.active) {
@@ -43,47 +58,74 @@ const Login = () => {
                 });
             }
         } catch (error) {
-            toast.error('Error en el inicio de sesión.', { position: 'top-right', autoClose: 3000 });
+            toast.error('Error en el inicio de sesión. Verifica tus credenciales.', {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+        } finally {
+            setLoading(false);
         }
+    };
+
+    const handleCedulaChange = (e) => {
+        const value = e.target.value.replace(/\D/g, ''); // Solo permite números
+        setCedula(value);
     };
 
     return (
         <div className="auth-container">
             <div className="form-container-modern">
-                <h1>Iniciar Sesión</h1>
-                <p>Bienvenido, por favor ingresa tus credenciales</p>
-                <form onSubmit={handleSubmit}>
-                    <div className="input-group">
-                        <label htmlFor="cedula">Cédula</label>
-                        <input
-                            id="cedula"
-                            type="text"
-                            placeholder="Ingresa tu cédula"
-                            value={cedula}
-                            onChange={(e) => setCedula(e.target.value)}
-                        />
-                    </div>
-                    <div className="input-group">
-                        <label htmlFor="password">Contraseña</label>
-                        <input
-                            id="password"
-                            type="password"
-                            placeholder="Ingresa tu contraseña"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-                    <button id="login" type="submit">
-                        Inicia sesión
-                    </button>
-                    <button
-                        type="button"
-                        className="secondary-button"
-                        onClick={() => navigate('/register')}
-                    >
-                        Regístrate
-                    </button>
-                </form>
+                <div className="form-content">
+                    <img
+                        src={logo}
+                        alt="Logo"
+                        className="logo-image"
+                    />
+                    <h1>Iniciar Sesión</h1>
+                    <p>Bienvenido, por favor ingresa tus credenciales</p>
+                    <form onSubmit={handleSubmit}>
+                        <div className="input-group">
+                            <label htmlFor="cedula">Cédula</label>
+                            <input
+                                id="cedula"
+                                type="text"
+                                placeholder="Ingresa tu cédula"
+                                value={cedula}
+                                onChange={handleCedulaChange}
+                                required
+                            />
+                        </div>
+                        <div className="input-group">
+                            <label htmlFor="password">Contraseña</label>
+                            <div className="password-input">
+                                <input
+                                    id="password"
+                                    type={showPassword ? 'text' : 'password'}
+                                    placeholder="Ingresa tu contraseña"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                                <span
+                                    className="show-password-icon"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                </span>
+                            </div>
+                        </div>
+                        <button id="login" type="submit" disabled={loading}>
+                            {loading ? 'Cargando...' : 'Inicia sesión'}
+                        </button>
+                        <button
+                            type="button"
+                            className="secondary-button"
+                            onClick={() => navigate('/register')}
+                        >
+                            Regístrate
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <div className="video-container">

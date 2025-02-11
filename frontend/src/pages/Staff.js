@@ -341,7 +341,8 @@ const Staff = () => {
                 <Card>
                     <Card.Body>
                         <div className="table-responsive">
-                            <table className="table table-striped">
+                            <table className="table table-bordered">
+
                                 <thead>
                                     <tr>
                                         <th>Cédula</th>

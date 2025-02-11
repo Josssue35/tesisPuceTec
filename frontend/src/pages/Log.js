@@ -4,6 +4,9 @@ import AdminSideMenu from '../components/SideMenuAdmin';
 import '../styles/Log.css';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const Log = () => {
     const [filteredLogs, setFilteredLogs] = useState([]);
@@ -17,6 +20,10 @@ const Log = () => {
     });
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(10);
+
+    // Estados para el ordenamiento
+    const [sortColumn, setSortColumn] = useState(null);
+    const [sortDirection, setSortDirection] = useState('asc');
 
     // Obtener los datos de la bitácora
     const fetchLog = async () => {
@@ -88,7 +95,18 @@ const Log = () => {
         setCurrentPage(1);
     };
 
-    // Aplicar filtros
+    // Función para manejar sort al hacer click en el encabezado de columna
+    const handleSort = (column) => {
+        if (sortColumn === column) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortColumn(column);
+            setSortDirection('asc');
+        }
+        setCurrentPage(1);
+    };
+
+    // Filtrar logs al cambiar la data o los filtros
     useEffect(() => {
         const filteredData = logs.filter((log) => {
             const logDate = new Date(log.fecha);
@@ -126,22 +144,52 @@ const Log = () => {
         loadData();
     }, []);
 
-    // Calcular los datos paginados
+    // Ordenar logs
+    const getSortedLogs = () => {
+        const sorted = [...filteredLogs];
+        if (sortColumn !== null) {
+            sorted.sort((a, b) => {
+                if (sortColumn === 'fecha') {
+                    const dateA = new Date(a.fecha);
+                    const dateB = new Date(b.fecha);
+                    if (dateA < dateB) return sortDirection === 'asc' ? -1 : 1;
+                    if (dateA > dateB) return sortDirection === 'asc' ? 1 : -1;
+                    return 0;
+                } else {
+                    const valueA = a[sortColumn]?.toString().toLowerCase() || '';
+                    const valueB = b[sortColumn]?.toString().toLowerCase() || '';
+                    if (valueA < valueB) return sortDirection === 'asc' ? -1 : 1;
+                    if (valueA > valueB) return sortDirection === 'asc' ? 1 : -1;
+                    return 0;
+                }
+            });
+        }
+        return sorted;
+    };
+    const now = new Date();
+    const formattedDate = now.toLocaleString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    }).replace(',', '');
+
+    const safeFileName = formattedDate.replace(/\//g, '-').replace(/:/g, '-');
+
+    // Logs ordenados
+    const sortedLogs = getSortedLogs();
+
+    // Paginación
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = filteredLogs.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = sortedLogs.slice(indexOfFirstItem, indexOfLastItem);
 
-    // Cambiar de página
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-    // Componente de paginación
     const Pagination = () => {
-        const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
-
+        const totalPages = Math.ceil(sortedLogs.length / itemsPerPage);
         return (
             <nav>
                 <ul className="pagination justify-content-center">
-                    {/* Botón Atrás */}
                     <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                         <button
                             onClick={() => paginate(currentPage - 1)}
@@ -151,16 +199,14 @@ const Log = () => {
                             Atrás
                         </button>
                     </li>
-
-                    {/* Página Actual */}
                     <li className="page-item active">
                         <span className="page-link">
                             Página {currentPage} de {totalPages}
                         </span>
                     </li>
-
-                    {/* Botón Siguiente */}
-                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <li
+                        className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}
+                    >
                         <button
                             onClick={() => paginate(currentPage + 1)}
                             className="page-link"
@@ -174,6 +220,67 @@ const Log = () => {
         );
     };
 
+    // Renderizado de íconos de orden en el header
+    const renderSortIcon = (column) => {
+        if (column !== sortColumn) {
+            return (
+                <span className="ms-2">
+                    <i className="bi bi-caret-up text-muted" />
+                    <i className="bi bi-caret-down text-muted" />
+                </span>
+            );
+        }
+
+        if (sortDirection === 'asc') {
+            return (
+                <span className="ms-2">
+                    <i className="bi bi-caret-up text-primary" />
+                    <i className="bi bi-caret-down text-muted" />
+                </span>
+            );
+        }
+        return (
+            <span className="ms-2">
+                <i className="bi bi-caret-up text-muted" />
+                <i className="bi bi-caret-down text-primary" />
+            </span>
+        );
+    };
+
+    // 4. Función para exportar a Excel usando xlsx y file-saver
+    const handleExportExcel = () => {
+        const dataToExport = getSortedLogs();
+
+        // Construimos las filas con las columnas que queremos
+        const exportData = dataToExport.map((log) => ({
+            'Módulo': log.modulo,
+            'Acción': log.accion,
+            'Detalle': log.detalle,
+            'Usuario': users[log.usuario_id] || 'Usuario no encontrado',
+            'Fecha': formatDate(log.fecha),
+        }));
+
+        // Creamos la hoja de cálculo (worksheet) a partir de los datos
+        const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+        // Creamos el libro (workbook) y añadimos la hoja
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Bitácora');
+
+        // Generamos el archivo Excel en binario
+        const excelBuffer = XLSX.write(workbook, {
+            bookType: 'xlsx',
+            type: 'array',
+        });
+
+        // Lo convertimos a Blob para poder descargarlo
+        const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+        // Guardamos el archivo con FileSaver
+        saveAs(data, `Bitácora${safeFileName}.xlsx`);
+
+    };
+
     return (
         <div className="log-layout">
             <div className="log-sidebar">
@@ -185,7 +292,9 @@ const Log = () => {
                     <div className="log-header">
                         <Card className="mb-4">
                             <Card.Body>
-                                <h1 className="staff-title text-center my-4 text-primary fs-2 fw-bold">Bitácora</h1>
+                                <h1 className="staff-title text-center my-4 text-primary fs-2 fw-bold">
+                                    Bitácora
+                                </h1>
                             </Card.Body>
                         </Card>
 
@@ -230,13 +339,20 @@ const Log = () => {
                                         </Form.Group>
                                     </Col>
 
-                                    {/* Botón para limpiar filtros */}
+                                    {/* Botones: Limpiar Filtros y Exportar Excel */}
                                     <Col className="d-flex align-items-end">
                                         <Button
+                                            className=""
                                             variant="secondary"
                                             onClick={clearFilters}
                                         >
                                             Limpiar Filtros
+                                        </Button>
+                                        <Button
+                                            variant="success"
+                                            onClick={handleExportExcel}
+                                        >
+                                            Exportar Excel
                                         </Button>
                                     </Col>
                                 </Row>
@@ -249,11 +365,35 @@ const Log = () => {
                                     <table className="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Módulo</th>
-                                                <th>Acción</th>
-                                                <th>Detalle</th>
+                                                <th
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleSort('modulo')}
+                                                >
+                                                    Módulo
+                                                    {renderSortIcon('modulo')}
+                                                </th>
+                                                <th
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleSort('accion')}
+                                                >
+                                                    Acción
+                                                    {renderSortIcon('accion')}
+                                                </th>
+                                                <th
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleSort('detalle')}
+                                                >
+                                                    Detalle
+                                                    {renderSortIcon('detalle')}
+                                                </th>
                                                 <th>Usuario</th>
-                                                <th>Fecha</th>
+                                                <th
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => handleSort('fecha')}
+                                                >
+                                                    Fecha
+                                                    {renderSortIcon('fecha')}
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -269,7 +409,10 @@ const Log = () => {
                                                         <td>{log.modulo}</td>
                                                         <td>{log.accion}</td>
                                                         <td>{log.detalle}</td>
-                                                        <td>{users[log.usuario_id] || 'Usuario no encontrado'}</td>
+                                                        <td>
+                                                            {users[log.usuario_id] ||
+                                                                'Usuario no encontrado'}
+                                                        </td>
                                                         <td>{formatDate(log.fecha)}</td>
                                                     </tr>
                                                 ))

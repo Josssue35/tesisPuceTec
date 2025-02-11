@@ -96,7 +96,7 @@ const ProductList = () => {
     return (
         <div className="row">
             {/* Menú lateral */}
-            <div className="col-md-2">
+            <div className="sidemenu-producto">
                 <AdminSideMenu />
             </div>
 

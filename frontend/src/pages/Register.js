@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/RegisterStyles.css';
+import logo from '../resources/logoDelValle.png';
 
 const Register = () => {
     const [cedula, setCedula] = useState('');
@@ -73,6 +74,11 @@ const Register = () => {
 
             {/* Contenedor del formulario de registro */}
             <div className="form-container-modern">
+                <img
+                    src={logo}
+                    alt="Logo"
+                    className="logo-image"
+                />
                 <h1 className="auth-title">Registro</h1>
                 <form onSubmit={handleSubmit} className="auth-form">
                     {/* Campo: Cédula */}

@@ -7,51 +7,36 @@ body {
     box-sizing: border-box;
 }
 
-/* Contenedor principal que ocupa todo el viewport */
 .staff-page {
     display: flex;
     width: 100vw;
-    /* 100% del ancho del viewport */
     height: 100vh;
-    /* 100% del alto del viewport */
     margin: 0;
     padding: 0;
-    /* Evita overflow: hidden si no es estrictamente necesario */
 }
 
-/* Sidebar fija de 240px */
 .sidebar {
     width: 240px;
-    background-color: #f8f9fa;
     height: 100vh;
-    /* Para abarcar todo el alto de la página */
     overflow-y: auto;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     z-index: 10;
-    /* Asegura que esté sobre el contenido (si hay necesidad) */
 }
 
-/* Contenedor principal que ocupará el espacio restante */
 .staff-container {
     flex-grow: 1;
     display: flex;
-    /* Si quieres que internamente sea Flex */
     flex-direction: column;
     padding: 20px;
-    background-color: #ffffff;
-    /* Color de fondo */
     overflow-y: auto;
-    /* Scroll vertical para el contenido */
     position: relative;
     z-index: 1;
 }
 
-/* Si vas a usar la clase 'header' dentro de .staff-container */
 
 
 .header>* {
     width: 100%;
-    /* Asegura que los hijos ocupen todo el ancho */
 }
 
 .staff-title h1 {

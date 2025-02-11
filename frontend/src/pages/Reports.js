@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Button, Form, Row, Col, Modal, Table, Card } from "react-bootstrap";
 import AdminSideMenu from "../components/SideMenuAdmin";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement } from 'chart.js';
-import { Bar, Line } from "react-chartjs-2";
 import * as XLSX from "xlsx";
 import { format } from 'date-fns';
 import "../styles/Report.css";
+import axios from 'axios';
+import Chart from "react-apexcharts";
+
 
 ChartJS.register(
     ArcElement, Tooltip, Legend,
@@ -34,20 +36,18 @@ const Reports = () => {
     const [orderDetails, setOrderDetails] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/pedido/pedido-total")
-            .then((response) => response.json())
-            .then((data) => {
-                setData(data);
-                setFilteredData(data);
+        axios.get("/api/pedido/pedido-total")
+            .then((response) => {
+                setData(response.data);
+                setFilteredData(response.data);
             })
             .catch((error) => console.error("Error fetching data:", error));
     }, []);
 
     const fetchOrderDetails = (id) => {
-        fetch(`http://localhost:3000/api/pedido/${id}`)
-            .then((response) => response.json())
-            .then((data) => {
-                setOrderDetails(data);
+        axios.get(`/api/pedido/${id}`)
+            .then((response) => {
+                setOrderDetails(response.data);
                 setShowModal(true);
             })
             .catch((error) => console.error("Error fetching order details:", error));
@@ -192,32 +192,65 @@ const Reports = () => {
         salesByMonth[a] > salesByMonth[b] ? a : b, "");
 
 
-    const barData = {
-        labels: Object.keys(salesBySeller),
-        datasets: [
-            {
-                label: 'Ventas por Vendedor',
-                data: Object.values(salesBySeller),
-                backgroundColor: "#36A2EB",
-                borderColor: "#36A2EB",
-                borderWidth: 1,
+    const donutSeries = Object.values(salesBySeller).map(Number);
+
+    const donutOptions = {
+        chart: {
+            type: 'donut',
+            toolbar: {
+                show: true,
+                tools: {
+                    download: true,
+                },
             },
-        ],
+        },
+
+        labels: Object.keys(salesBySeller), // Nombres de los vendedores
+        colors: ['#36A2EB', '#FF6384', '#4BC0C0', '#FF9F40', '#9966FF'], // Colores personalizados
+        tooltip: {
+            y: {
+                formatter: (value) => value.toFixed(2), // Formatear tooltips a 2 decimales
+            },
+        },
+        plotOptions: {
+            pie: {
+                donut: {
+                    labels: {
+                        show: true,
+                        total: {
+                            show: true,
+                            label: 'Total Ventas',
+                            formatter: (w) => {
+                                const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                return total.toFixed(2);
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        legend: {
+            position: 'bottom',
+            horizontalAlign: 'center',
+        },
     };
 
-    const lineData = {
-        labels: Object.keys(salesByDate),
-        datasets: [
-            {
-                label: 'Progreso de Ventas Totales',
-                data: Object.values(salesByDate),
-                fill: false,
-                borderColor: "#FF6384",
-                tension: 0.1,
-            },
-        ],
+    const lineOptions = {
+        chart: {
+            type: 'line',
+        },
+        xaxis: {
+            categories: Object.keys(salesByDate),
+        },
+        colors: ['#FF6384'],
     };
 
+    const lineSeries = [
+        {
+            name: 'Ventas',
+            data: Object.values(salesByDate),
+        },
+    ];
     // Obtener datos para la página actual
     const startIndex = (currentPage - 1) * itemsPerPage;
     const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage);
@@ -324,7 +357,8 @@ const Reports = () => {
                         <Card>
                             <Card.Body>
                                 <div className="table-responsive">
-                                    <table className="table table-hover table-striped">
+                                    <table className="table table-bordered">
+
                                         <thead>
                                             <tr>
                                                 <th>Número de Orden</th>
@@ -355,10 +389,10 @@ const Reports = () => {
                                     </table>
                                 </div>
                             </Card.Body>
+                            <Pagination />
                         </Card>
 
-                        {/* Pagination */}
-                        <Pagination />
+
 
                         {/* Modal */}
                         <Modal show={showModal} onHide={handleCloseModal} centered>
@@ -403,12 +437,22 @@ const Reports = () => {
                             <Card.Body>
 
                                 <div className="mb-4">
-                                    <h3 className="text-center">Ventas Totales: ${totalSales.toFixed(2)}</h3>
-                                    <Line data={lineData} />
+                                    <h3 className="text-center">Ventas Totales: <span className="value">${totalSales.toFixed(2)}</span></h3>
+                                    <Chart
+                                        options={lineOptions}
+                                        series={lineSeries}
+                                        type="line"
+                                        height={300}
+                                    />
                                 </div>
                                 <div>
-                                    <h3 className="text-center">Mayor Vendedor: {topSeller}</h3>
-                                    <Bar data={barData} />
+                                    <h3 className="text-center">Mayor Vendedor: <span className="value">{topSeller}</span></h3>
+                                    <Chart
+                                        options={donutOptions}
+                                        series={donutSeries}
+                                        type="donut"
+                                        height={350}
+                                    />
                                 </div>
                                 <div className="best-month-section text-center p-4 bg-light rounded">
                                     <h3 className="text-primary mb-3">
@@ -416,7 +460,7 @@ const Reports = () => {
                                         Mes más vendido: <strong>{topMonth}</strong>
                                     </h3>
                                     <h2 className="text-success display-6">
-                                        Total: <strong>${salesByMonth[topMonth]}</strong>
+                                        Total: <strong>${salesByMonth[topMonth] ? salesByMonth[topMonth].toFixed(2) : "0.00"}</strong>
                                     </h2>
                                 </div>
                             </Card.Body>

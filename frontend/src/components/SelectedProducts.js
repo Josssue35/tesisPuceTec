@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import '../styles/ProductList.css';
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
+import "../styles/ProductList.css";
 const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearCart }) => {
     const [totalPrice, setTotalPrice] = useState(0);
 
-    // Calcula el precio total
     useEffect(() => {
         const total = selectedProducts.reduce((sum, { product, quantity }) => {
             return sum + parseFloat(product.precio) * quantity;
@@ -14,7 +12,6 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
         setTotalPrice(total);
     }, [selectedProducts]);
 
-    // Maneja el cambio de cantidad
     const handleQuantityChange = (id, change) => {
         const product = selectedProducts.find((p) => p.product.id === id);
         const newQuantity = Math.max(0, (product.quantity || 0) + change);
@@ -24,15 +21,15 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
     const handleAcceptPurchase = async () => {
         if (selectedProducts.length === 0) {
             Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'No tienes productos seleccionados para comprar.',
+                icon: "error",
+                title: "Error",
+                text: "No tienes productos seleccionados para enviar a cocina.",
             });
             return;
         }
 
         try {
-            const userId = localStorage.getItem('fullname');
+            const userId = localStorage.getItem("fullname");
 
             const pedidoData = {
                 userId: userId,
@@ -44,37 +41,50 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
                 })),
             };
 
-            const response = await axios.post('/api/pedido', pedidoData);
-            console.log(totalPrice);
-            console.log('Pedido creado:', response.data);
+            const response = await axios.post("/api/pedido", pedidoData);
 
             Swal.fire({
-                icon: 'success',
-                title: 'Compra exitosa',
-                text: `Total: $${totalPrice.toFixed(2)}`,
-                confirmButtonText: 'Aceptar',
+                icon: "success",
+                title: "Pedido enviado a cocina",
+                text: `Número de Pedido: ${response.data.pedidoId}`,
+                confirmButtonText: "Aceptar",
             }).then((result) => {
                 if (result.isConfirmed) {
-
-                    if (typeof clearCart === 'function') {
+                    imprimirTicketCocina(response.data.pedidoId);
+                    if (typeof clearCart === "function") {
                         clearCart();
                     } else {
-                        console.warn('clearCart no está definida o no es una función.');
+                        console.warn("clearCart no está definida o no es una función.");
                     }
                 }
             });
         } catch (error) {
-            console.error('Error al realizar la compra:', error);
+            console.error("Error al enviar el pedido:", error);
 
             Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Hubo un problema al procesar el pedido. Por favor, intenta de nuevo.',
+                icon: "error",
+                title: "Error",
+                text: "Hubo un problema al enviar el pedido. Intenta de nuevo.",
             });
         }
     };
 
+    const imprimirTicketCocina = async (pedidoId) => {
+        try {
+            const response = await axios.post("api/print/imprimir-pedido", {
+                pedidoId,
+                productos: selectedProducts.map(({ product, quantity }) => ({
+                    nombre: product.nombre,
+                    cantidad: quantity,
+                })),
+                totalPrice,
+            });
 
+            console.log(response.data);
+        } catch (error) {
+            console.error("Error al imprimir el ticket:", error);
+        }
+    };
 
     return (
         <div className="selected-products-container">
@@ -120,7 +130,7 @@ const SelectedProducts = ({ selectedProducts, onUpdateQuantity, onRemove, clearC
             </div>
 
             <button onClick={handleAcceptPurchase} className="accept-btn">
-                Aceptar Compra
+                Enviar Pedido a Cocina
             </button>
         </div>
     );
