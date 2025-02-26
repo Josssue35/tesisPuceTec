@@ -350,6 +350,7 @@ const Log = () => {
                                         </Button>
                                         <Button
                                             variant="success"
+                                            className='ms-2'
                                             onClick={handleExportExcel}
                                         >
                                             Exportar Excel

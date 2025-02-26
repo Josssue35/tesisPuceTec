@@ -209,7 +209,7 @@ const Reports = () => {
         colors: ['#36A2EB', '#FF6384', '#4BC0C0', '#FF9F40', '#9966FF'], // Colores personalizados
         tooltip: {
             y: {
-                formatter: (value) => value.toFixed(2), // Formatear tooltips a 2 decimales
+                formatter: (value) => value.toFixed(2),
             },
         },
         plotOptions: {
@@ -242,8 +242,14 @@ const Reports = () => {
         xaxis: {
             categories: Object.keys(salesByDate),
         },
+        yaxis: {
+            labels: {
+                formatter: (value) => Number(value).toFixed(2),
+            },
+        },
         colors: ['#FF6384'],
     };
+
 
     const lineSeries = [
         {
