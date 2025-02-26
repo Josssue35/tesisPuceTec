@@ -4,6 +4,7 @@ import AdminSideMenu from '../components/SideMenuAdmin';
 import { Modal, Button, Form, Row, Col, Card } from 'react-bootstrap';
 import '../styles/Staff.css';
 import axios from 'axios';
+
 const Staff = () => {
     const [employees, setEmployees] = useState([]);
     const [filteredEmployees, setFilteredEmployees] = useState([]);
@@ -21,11 +22,9 @@ const Staff = () => {
         role: '',
     });
 
-
-    //Estados y constantes para la paginación
+    // Estados y constantes para la paginación (10 items por página)
     const [currentPage, setCurrentPage] = useState(1);
     const employeesPerPage = 10;
-
 
     const fetchEmployees = async () => {
         try {
@@ -41,6 +40,7 @@ const Staff = () => {
             });
         }
     };
+
     const applyFilters = useCallback(() => {
         let filtered = employees;
 
@@ -62,30 +62,24 @@ const Staff = () => {
         }
 
         setFilteredEmployees(filtered);
-
-        // Cada vez que filtramos, reseteamos la página actual a la 1
+        // Reseteamos la página actual a 1 al aplicar un filtro
         setCurrentPage(1);
     }, [employees, filters]);
 
-    // Aplicar filtros cuando cambien
     useEffect(() => {
         applyFilters();
     }, [applyFilters]);
 
-
-    // Función para abrir el modal de edición
     const handleEdit = (employee) => {
         setSelectedEmployee(employee);
         setShowModal(true);
     };
 
-    // Función para cerrar el modal
     const handleCloseModal = () => {
         setShowModal(false);
         setSelectedEmployee(null);
     };
 
-    // Función para manejar el envío del formulario de edición
     const handleSaveChanges = async (e) => {
         e.preventDefault();
         try {
@@ -96,15 +90,11 @@ const Staff = () => {
                 active: selectedEmployee.active,
                 password: selectedEmployee.password,
             });
-
-            // Mostrar mensaje de éxito
             Swal.fire('¡Actualizado!', 'El usuario ha sido actualizado exitosamente.', 'success');
             await logAction('Personal', 'Editar Usuario', `Se editó el usuario ${selectedEmployee.full_name}`, localStorage.getItem('userId'));
-            // Actualizar la lista de empleados y cerrar el modal
             fetchEmployees();
             handleCloseModal();
         } catch (error) {
-            // Manejar errores
             if (error.response) {
                 Swal.fire('Error', `Error ${error.response.status}: ${error.response.data.message || 'No se pudo actualizar el usuario.'}`, 'error');
             } else if (error.request) {
@@ -115,15 +105,12 @@ const Staff = () => {
         }
     };
 
-    // Función para manejar la eliminación de un usuario
     const handleDelete = (userId) => {
         const employee = employees.find(emp => emp.id === userId);
-
         if (!employee) {
             Swal.fire('Error', 'No se encontró el empleado.', 'error');
             return;
         }
-
         Swal.fire({
             title: '¿Estás seguro?',
             text: `¡No podrás revertir la eliminación de ${employee.full_name}!`,
@@ -143,14 +130,10 @@ const Staff = () => {
     const deleteUser = async (userId, fullName) => {
         try {
             await axios.delete(`api/usuarios/personal/${userId}`);
-
             Swal.fire('¡Eliminado!', `El usuario ${fullName} ha sido eliminado.`, 'success');
-
             await logAction('Personal', 'Eliminar Usuario', `Se eliminó el usuario ${fullName} (ID: ${userId})`, localStorage.getItem('userId'));
-
             fetchEmployees();
         } catch (error) {
-            // Manejar errores
             if (error.response) {
                 Swal.fire('Error', `Error ${error.response.status}: ${error.response.data.message || 'No se pudo eliminar el usuario.'}`, 'error');
             } else if (error.request) {
@@ -160,7 +143,7 @@ const Staff = () => {
             }
         }
     };
-    // Función para manejar el cambio en los campos del formulario de creación
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewEmployee({
@@ -172,13 +155,10 @@ const Staff = () => {
     const handleCreateEmployee = async (e) => {
         e.preventDefault();
         const { cedula, password, full_name, role } = newEmployee;
-
-        // Validar campos obligatorios
         if (!cedula || !password || !full_name || !role) {
             Swal.fire('Error', 'Todos los campos son requeridos.', 'error');
             return;
         }
-
         try {
             await axios.post('api/usuarios/personal/registerAdmin', {
                 cedula,
@@ -186,16 +166,12 @@ const Staff = () => {
                 full_name,
                 role,
             });
-
-            // Mostrar mensaje de éxito
             Swal.fire('¡Creado!', 'El usuario ha sido creado exitosamente.', 'success');
             await logAction('Personal', 'Crear Usuario', `Se creó el usuario ${full_name}`, localStorage.getItem('userId'));
-            // Actualizar la lista de empleados y limpiar el formulario
             fetchEmployees();
             setNewEmployee({ cedula: '', password: '', full_name: '', role: 'user' });
             setShowModal(false);
         } catch (error) {
-            // Manejar errores
             if (error.response) {
                 Swal.fire('Error', `Error ${error.response.status}: ${error.response.data.message || 'No se pudo crear el usuario.'}`, 'error');
             } else if (error.request) {
@@ -213,19 +189,16 @@ const Staff = () => {
             [name]: value,
         });
     };
-    // Obtener los datos al cargar el componente
+
     useEffect(() => {
         fetchEmployees();
     }, []);
 
-
-
-    //  Cálculo de paginación
+    // Cálculo de la paginación
     const totalPages = Math.ceil(filteredEmployees.length / employeesPerPage);
     const indexOfLastEmployee = currentPage * employeesPerPage;
     const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
     const currentEmployees = filteredEmployees.slice(indexOfFirstEmployee, indexOfLastEmployee);
-
 
     function limitCharacters(input, maxLength) {
         if (input.length > maxLength) {
@@ -233,19 +206,58 @@ const Staff = () => {
         }
         return input;
     }
-    // Bitacora acciones personal
+
+    // Función para registrar acciones en la bitácora
     const logAction = async (modulo, accion, detalle, usuario_id) => {
         try {
             await axios.post('/api/bitacora/crear-bitacora', {
                 modulo,
                 accion,
                 detalle,
-                usuario_id
+                usuario_id,
             });
         } catch (error) {
             console.error('Error al enviar la bitácora:', error);
         }
     };
+
+    // Función para manejar la paginación
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    // Componente de paginación separado
+    const Pagination = () => {
+        const totalPages = Math.ceil(filteredEmployees.length / employeesPerPage);
+        return (
+            <nav>
+                <ul className="pagination justify-content-center">
+                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                        <button
+                            onClick={() => paginate(currentPage - 1)}
+                            className="page-link"
+                            disabled={currentPage === 1}
+                        >
+                            Atrás
+                        </button>
+                    </li>
+                    <li className="page-item active">
+                        <span className="page-link">
+                            Página {currentPage} de {totalPages}
+                        </span>
+                    </li>
+                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                        <button
+                            onClick={() => paginate(currentPage + 1)}
+                            className="page-link"
+                            disabled={currentPage === totalPages}
+                        >
+                            Siguiente
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        );
+    };
+
     return (
         <div className="staff-page">
             {/* Sidebar */}
@@ -259,7 +271,9 @@ const Staff = () => {
                     <Card.Body>
                         <Row className="align-items-center">
                             <Col>
-                                <h1 className="staff-title text-center my-4 text-primary fs-2 fw-bold">Administración Empleados</h1>
+                                <h1 className="staff-title text-center my-4 text-primary fs-2 fw-bold">
+                                    Administración Empleados
+                                </h1>
                             </Col>
                             <Col className="text-end">
                                 <Button variant="primary" onClick={() => setShowModal(true)}>
@@ -270,7 +284,6 @@ const Staff = () => {
                     </Card.Body>
                 </Card>
 
-                {/* Contenedor Mid con los contenedores de datos en fila */}
                 <Row className="mb-4">
                     <Col>
                         <Card>
@@ -298,7 +311,7 @@ const Staff = () => {
                     </Col>
                 </Row>
 
-                {/* Sección de Filtros */}
+                {/* Sección de filtros */}
                 <Card className="mb-4">
                     <Card.Body>
                         <Row>
@@ -312,22 +325,14 @@ const Staff = () => {
                                 />
                             </Col>
                             <Col>
-                                <Form.Select
-                                    name="status"
-                                    value={filters.status}
-                                    onChange={handleFilterChange}
-                                >
+                                <Form.Select name="status" value={filters.status} onChange={handleFilterChange}>
                                     <option value="">Estado</option>
                                     <option value="active">Activo</option>
                                     <option value="inactive">Inactivo</option>
                                 </Form.Select>
                             </Col>
                             <Col>
-                                <Form.Select
-                                    name="role"
-                                    value={filters.role}
-                                    onChange={handleFilterChange}
-                                >
+                                <Form.Select name="role" value={filters.role} onChange={handleFilterChange}>
                                     <option value="">Rol</option>
                                     <option value="admin">Admin</option>
                                     <option value="user">User</option>
@@ -342,7 +347,6 @@ const Staff = () => {
                     <Card.Body>
                         <div className="table-responsive">
                             <table className="table table-bordered">
-
                                 <thead>
                                     <tr>
                                         <th>Cédula</th>
@@ -358,18 +362,22 @@ const Staff = () => {
                                             <td>{employee.cedula}</td>
                                             <td>{employee.full_name}</td>
                                             <td>
-                                                <span className={`badge fs-6 p-2 ${employee.role === 'admin'
-                                                    ? 'bg-primary bg-opacity-10 text-primary border border-primary'
-                                                    : 'bg-secondary bg-opacity-10 text-secondary border border-secondary'
-                                                    }`}>
+                                                <span
+                                                    className={`badge fs-6 p-2 ${employee.role === 'admin'
+                                                        ? 'bg-primary bg-opacity-10 text-primary border border-primary'
+                                                        : 'bg-secondary bg-opacity-10 text-secondary border border-secondary'
+                                                        }`}
+                                                >
                                                     {employee.role}
                                                 </span>
                                             </td>
                                             <td>
-                                                <span className={`badge fs-6 p-2 ${employee.active
-                                                    ? 'bg-success bg-opacity-10 text-success border border-success'
-                                                    : 'bg-danger bg-opacity-10 text-danger border border-danger'
-                                                    }`}>
+                                                <span
+                                                    className={`badge fs-6 p-2 ${employee.active
+                                                        ? 'bg-success bg-opacity-10 text-success border border-success'
+                                                        : 'bg-danger bg-opacity-10 text-danger border border-danger'
+                                                        }`}
+                                                >
                                                     {employee.active ? 'Activo' : 'Inactivo'}
                                                 </span>
                                             </td>
@@ -383,42 +391,13 @@ const Staff = () => {
                                             </td>
                                         </tr>
                                     ))}
-
                                 </tbody>
                             </table>
                         </div>
                     </Card.Body>
+                    {totalPages > 1 && <Pagination />}
                 </Card>
 
-                {/*Bloque de paginación */}
-                {totalPages > 1 && (
-                    <div className="d-flex justify-content-center align-items-center mt-3">
-                        {/* Botón Anterior */}
-                        <Button
-                            variant="outline-primary"
-                            onClick={() => setCurrentPage(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className="me-2"
-                        >
-                            Anterior
-                        </Button>
-
-                        {/* Página Actual */}
-                        <span className="fw-bold mx-3">
-                            Página {currentPage} de {totalPages}
-                        </span>
-
-                        {/* Botón Siguiente */}
-                        <Button
-                            variant="outline-primary"
-                            onClick={() => setCurrentPage(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className="ms-2"
-                        >
-                            Siguiente
-                        </Button>
-                    </div>
-                )}
 
             </div>
 
@@ -435,17 +414,18 @@ const Staff = () => {
                                 type="number"
                                 name="cedula"
                                 value={selectedEmployee ? selectedEmployee.cedula : newEmployee.cedula}
-                                onChange={selectedEmployee
-                                    ? (e) =>
-                                        setSelectedEmployee({
-                                            ...selectedEmployee,
-                                            cedula: limitCharacters(e.target.value, 10), // Aplicar límite
-                                        })
-                                    : (e) =>
-                                        setNewEmployee({
-                                            ...newEmployee,
-                                            cedula: limitCharacters(e.target.value, 10), // Aplicar límite
-                                        })
+                                onChange={
+                                    selectedEmployee
+                                        ? (e) =>
+                                            setSelectedEmployee({
+                                                ...selectedEmployee,
+                                                cedula: limitCharacters(e.target.value, 10),
+                                            })
+                                        : (e) =>
+                                            setNewEmployee({
+                                                ...newEmployee,
+                                                cedula: limitCharacters(e.target.value, 10),
+                                            })
                                 }
                                 required
                             />
@@ -457,9 +437,11 @@ const Staff = () => {
                                 type="password"
                                 name="password"
                                 value={selectedEmployee ? selectedEmployee.password || '' : newEmployee.password}
-                                onChange={selectedEmployee
-                                    ? (e) => setSelectedEmployee({ ...selectedEmployee, password: e.target.value })
-                                    : handleInputChange}
+                                onChange={
+                                    selectedEmployee
+                                        ? (e) => setSelectedEmployee({ ...selectedEmployee, password: e.target.value })
+                                        : handleInputChange
+                                }
                             />
                         </Form.Group>
 
@@ -468,23 +450,37 @@ const Staff = () => {
                             <Form.Control
                                 type="text"
                                 name="full_name"
-                                value={selectedEmployee ? selectedEmployee.full_name.toUpperCase() : newEmployee.full_name.toUpperCase()}
-                                onChange={selectedEmployee ? (e) => setSelectedEmployee({ ...selectedEmployee, full_name: e.target.value }) : handleInputChange}
+                                value={
+                                    selectedEmployee
+                                        ? selectedEmployee.full_name.toUpperCase()
+                                        : newEmployee.full_name.toUpperCase()
+                                }
+                                onChange={
+                                    selectedEmployee
+                                        ? (e) => setSelectedEmployee({ ...selectedEmployee, full_name: e.target.value })
+                                        : handleInputChange
+                                }
                                 required
                             />
                         </Form.Group>
+
                         <Form.Group className="mb-3">
                             <Form.Label>Rol</Form.Label>
                             <Form.Select
                                 name="role"
                                 value={selectedEmployee ? selectedEmployee.role : newEmployee.role}
-                                onChange={selectedEmployee ? (e) => setSelectedEmployee({ ...selectedEmployee, role: e.target.value }) : handleInputChange}
+                                onChange={
+                                    selectedEmployee
+                                        ? (e) => setSelectedEmployee({ ...selectedEmployee, role: e.target.value })
+                                        : handleInputChange
+                                }
                                 required
                             >
                                 <option value="admin">Admin</option>
                                 <option value="user">User</option>
                             </Form.Select>
                         </Form.Group>
+
                         {selectedEmployee && (
                             <Form.Group className="mb-3">
                                 <Form.Label>Estado</Form.Label>
@@ -502,6 +498,7 @@ const Staff = () => {
                                 </Form.Select>
                             </Form.Group>
                         )}
+
                         <Button variant="primary" type="submit">
                             {selectedEmployee ? 'Guardar Cambios' : 'Crear Empleado'}
                         </Button>

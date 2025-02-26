@@ -14,8 +14,13 @@ const Register = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Validar que todos los campos estén llenos
-        if (!cedula || !password || !fullName) {
+        // Elimina espacios al inicio y al final de cada campo
+        const trimmedCedula = cedula.trim();
+        const trimmedPassword = password.trim();
+        const trimmedFullName = fullName.trim();
+
+        // 1. Validar que todos los campos estén llenos
+        if (!trimmedCedula || !trimmedPassword || !trimmedFullName) {
             toast.error('Todos los campos son requeridos', {
                 position: 'top-right',
                 autoClose: 3000,
@@ -23,11 +28,57 @@ const Register = () => {
             return;
         }
 
+        // 2. Validar cédula: mínimo 10 caracteres y solo números
+        if (trimmedCedula.length < 10) {
+            toast.error('La cédula debe tener al menos 10 caracteres', {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+            return;
+        }
+        if (!/^\d+$/.test(trimmedCedula)) {
+            toast.error('La cédula debe contener solo números', {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        // 3. Validar nombre completo: mínimo 10 caracteres, solo letras y espacios
+        if (trimmedFullName.length < 10) {
+            toast.error('El nombre completo debe tener al menos 10 caracteres', {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+            return;
+        }
+        if (!/^[a-zA-Z\s]+$/.test(trimmedFullName)) {
+            toast.error('El nombre completo solo puede contener letras y espacios', {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        // 4. Validar contraseña: mínimo 6 caracteres
+        if (trimmedPassword.length < 6) {
+            toast.error('La contraseña debe tener al menos 6 caracteres', {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+            return;
+        }
+
+        // Si se pasa toda la validación, intenta registrar
         try {
-            const response = await fetch('http://localhost:3000/api/usuarios/register', {
+            const response = await fetch('/api/usuarios/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ cedula, password, full_name: fullName }),
+                body: JSON.stringify({
+                    cedula: trimmedCedula,
+                    password: trimmedPassword,
+                    full_name: trimmedFullName,
+                }),
             });
 
             const data = await response.json();
@@ -37,7 +88,7 @@ const Register = () => {
                     position: 'top-right',
                     autoClose: 3000,
                 });
-                navigate('/login'); // Redirigir al usuario a la página de inicio de sesión
+                navigate('/login'); // Redirigir a la página de inicio de sesión
             } else {
                 toast.error(data.error || 'Error en el registro', {
                     position: 'top-right',
@@ -89,8 +140,14 @@ const Register = () => {
                             type="text"
                             placeholder="Ingresa tu cédula"
                             value={cedula}
-                            onChange={(e) => setCedula(e.target.value)}
+                            onChange={(e) => {
+                                const newValue = e.target.value;
+                                if (/^\d*$/.test(newValue)) {
+                                    setCedula(newValue);
+                                }
+                            }}
                         />
+
                     </div>
 
                     {/* Campo: Contraseña */}
@@ -113,8 +170,9 @@ const Register = () => {
                             type="text"
                             placeholder="Ingresa tu nombre completo"
                             value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
+                            onChange={(e) => setFullName(e.target.value.toUpperCase())}
                         />
+
                     </div>
 
                     {/* Botón de registro */}
