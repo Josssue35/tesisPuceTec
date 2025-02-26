@@ -11,6 +11,26 @@ const Register = () => {
     const [fullName, setFullName] = useState('');
     const navigate = useNavigate();
 
+    const isValidCedula = (cedula) => {
+        if (cedula.length !== 10) return false;
+        const province = parseInt(cedula.substring(0, 2), 10);
+        if (province < 1 || province > 24) return false;
+        const thirdDigit = parseInt(cedula.charAt(2), 10);
+        if (thirdDigit >= 6) return false;
+
+        let sum = 0;
+        for (let i = 0; i < 9; i++) {
+            let digit = parseInt(cedula.charAt(i), 10);
+            if (i % 2 === 0) {
+                digit *= 2;
+                if (digit > 9) digit -= 9;
+            }
+            sum += digit;
+        }
+        const verifier = sum % 10 === 0 ? 0 : 10 - (sum % 10);
+        return verifier === parseInt(cedula.charAt(9), 10);
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -28,9 +48,9 @@ const Register = () => {
             return;
         }
 
-        // 2. Validar cédula: mínimo 10 caracteres y solo números
-        if (trimmedCedula.length < 10) {
-            toast.error('La cédula debe tener al menos 10 caracteres', {
+        // 2. Validar cédula: debe tener 10 caracteres y solo números
+        if (trimmedCedula.length !== 10) {
+            toast.error('La cédula debe tener 10 dígitos', {
                 position: 'top-right',
                 autoClose: 3000,
             });
@@ -38,6 +58,14 @@ const Register = () => {
         }
         if (!/^\d+$/.test(trimmedCedula)) {
             toast.error('La cédula debe contener solo números', {
+                position: 'top-right',
+                autoClose: 3000,
+            });
+            return;
+        }
+        // Validar el algoritmo de la cédula
+        if (!isValidCedula(trimmedCedula)) {
+            toast.error('La cédula es inválida', {
                 position: 'top-right',
                 autoClose: 3000,
             });
@@ -88,7 +116,10 @@ const Register = () => {
                     position: 'top-right',
                     autoClose: 3000,
                 });
-                navigate('/login'); // Redirigir a la página de inicio de sesión
+                // Esperar 3 segundos para que el toast se muestre antes de redirigir
+                setTimeout(() => {
+                    navigate('/login');
+                }, 3000);
             } else {
                 toast.error(data.error || 'Error en el registro', {
                     position: 'top-right',
@@ -147,7 +178,6 @@ const Register = () => {
                                 }
                             }}
                         />
-
                     </div>
 
                     {/* Campo: Contraseña */}
@@ -172,7 +202,6 @@ const Register = () => {
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value.toUpperCase())}
                         />
-
                     </div>
 
                     {/* Botón de registro */}
